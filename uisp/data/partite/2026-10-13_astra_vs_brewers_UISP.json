@@ -1,0 +1,347 @@
+{
+  "schema_version": 1,
+  "type": "astra_phoenix_single_game",
+  "exported_at": "2026-10-13T15:24:16.161Z",
+  "competition": "UISP",
+  "game": {
+    "id": "g_mv6trafw_cylobp",
+    "date": "2026-10-13",
+    "competition": "UISP",
+    "season": "Senza stagione",
+    "phase": "Gironi",
+    "venue": "home",
+    "opponent": "Brewers",
+    "status": "Bozza",
+    "created_at": "2026-10-13T15:17:21.692Z",
+    "astra_score": 7,
+    "opponent_score": 2
+  },
+  "players": [
+    {
+      "id": "g_mv6trm5j_h7k3t7",
+      "game_id": "g_mv6trafw_cylobp",
+      "team": "home",
+      "number": "6",
+      "name": "Lebron James",
+      "on_court": true,
+      "starter": true
+    },
+    {
+      "id": "g_mv6trsdj_pqd592",
+      "game_id": "g_mv6trafw_cylobp",
+      "team": "home",
+      "number": "3",
+      "name": "Kevin Durant",
+      "on_court": false,
+      "starter": false
+    },
+    {
+      "id": "g_mv6trx0q_evpjs9",
+      "game_id": "g_mv6trafw_cylobp",
+      "team": "home",
+      "number": "45",
+      "name": "Micheal Jordan",
+      "on_court": false,
+      "starter": false
+    },
+    {
+      "id": "g_mv6tsg8v_d1o3uq",
+      "game_id": "g_mv6trafw_cylobp",
+      "team": "home",
+      "number": "32",
+      "name": "Shaquille O'Neal",
+      "on_court": true,
+      "starter": true
+    },
+    {
+      "id": "g_mv6tso3u_kc25y2",
+      "game_id": "g_mv6trafw_cylobp",
+      "team": "home",
+      "number": "1",
+      "name": "Derrick Rose",
+      "on_court": false,
+      "starter": false
+    },
+    {
+      "id": "g_mv6tsu1c_tn0onc",
+      "game_id": "g_mv6trafw_cylobp",
+      "team": "home",
+      "number": "8",
+      "name": "Danilo Gallinari",
+      "on_court": true,
+      "starter": false
+    },
+    {
+      "id": "g_mv6tt2zi_lzwyr6",
+      "game_id": "g_mv6trafw_cylobp",
+      "team": "home",
+      "number": "14",
+      "name": "Alberto Ghiotto",
+      "on_court": true,
+      "starter": true
+    },
+    {
+      "id": "g_mv6ttdj4_00fxji",
+      "game_id": "g_mv6trafw_cylobp",
+      "team": "home",
+      "number": "55",
+      "name": "Aldo Moro",
+      "on_court": false,
+      "starter": true
+    },
+    {
+      "id": "g_mv6tto71_fwkv66",
+      "game_id": "g_mv6trafw_cylobp",
+      "team": "home",
+      "number": "31",
+      "name": "Toto Rijna",
+      "on_court": true,
+      "starter": true
+    },
+    {
+      "id": "g_mv6ttxba_y69ud7",
+      "game_id": "g_mv6trafw_cylobp",
+      "team": "away",
+      "number": "1",
+      "name": "Brewers 1",
+      "on_court": true,
+      "starter": true
+    },
+    {
+      "id": "g_mv6tu2cu_ctbxwm",
+      "game_id": "g_mv6trafw_cylobp",
+      "team": "away",
+      "number": "2",
+      "name": "Brewers 2",
+      "on_court": true,
+      "starter": true
+    },
+    {
+      "id": "g_mv6tubfj_74sdqd",
+      "game_id": "g_mv6trafw_cylobp",
+      "team": "away",
+      "number": "3",
+      "name": "Brewers 3",
+      "on_court": true,
+      "starter": true
+    },
+    {
+      "id": "g_mv6tugmi_mi91up",
+      "game_id": "g_mv6trafw_cylobp",
+      "team": "away",
+      "number": "4",
+      "name": "Brewers 4",
+      "on_court": true,
+      "starter": true
+    },
+    {
+      "id": "g_mv6tun9t_ai0jz3",
+      "game_id": "g_mv6trafw_cylobp",
+      "team": "away",
+      "number": "5",
+      "name": "Brewers 5",
+      "on_court": true,
+      "starter": true
+    }
+  ],
+  "events": [
+    {
+      "id": "g_mv6twavu_5o33a4",
+      "game_id": "g_mv6trafw_cylobp",
+      "team": "away",
+      "player_id": "g_mv6tun9t_ai0jz3",
+      "type": "2PA",
+      "period": 1,
+      "clock": "09:26",
+      "zone": "AREA",
+      "created_at": "2026-10-13T15:21:15.546Z"
+    },
+    {
+      "id": "g_mv6twfdd_yhole0",
+      "game_id": "g_mv6trafw_cylobp",
+      "team": "home",
+      "player_id": "g_mv6tt2zi_lzwyr6",
+      "type": "DREB",
+      "period": 1,
+      "clock": "09:14",
+      "zone": "",
+      "created_at": "2026-10-13T15:21:21.361Z"
+    },
+    {
+      "id": "g_mv6twmw6_p0hyd4",
+      "game_id": "g_mv6trafw_cylobp",
+      "team": "away",
+      "player_id": "g_mv6tubfj_74sdqd",
+      "type": "FOUL",
+      "period": 1,
+      "clock": "08:55",
+      "zone": "",
+      "created_at": "2026-10-13T15:21:31.110Z"
+    },
+    {
+      "id": "g_mv6twrf1_o002fo",
+      "game_id": "g_mv6trafw_cylobp",
+      "team": "home",
+      "player_id": "g_mv6ttdj4_00fxji",
+      "type": "FOUL_DRAWN",
+      "period": 1,
+      "clock": "08:51",
+      "zone": "",
+      "created_at": "2026-10-13T15:21:36.973Z"
+    },
+    {
+      "id": "g_mv6txgjn_bkl71n",
+      "game_id": "g_mv6trafw_cylobp",
+      "team": "home",
+      "player_id": "g_mv6ttdj4_00fxji",
+      "type": "FTM",
+      "period": 1,
+      "clock": "08:51",
+      "zone": "",
+      "created_at": "2026-10-13T15:22:09.539Z"
+    },
+    {
+      "id": "g_mv6txhk9_5i28yu",
+      "game_id": "g_mv6trafw_cylobp",
+      "team": "home",
+      "player_id": "g_mv6ttdj4_00fxji",
+      "type": "FTM",
+      "period": 1,
+      "clock": "08:51",
+      "zone": "",
+      "created_at": "2026-10-13T15:22:10.857Z"
+    },
+    {
+      "id": "g_mv6txq0l_csy7qw",
+      "game_id": "g_mv6trafw_cylobp",
+      "team": "away",
+      "player_id": "g_mv6tu2cu_ctbxwm",
+      "type": "TOV",
+      "period": 1,
+      "clock": "08:37",
+      "zone": "",
+      "created_at": "2026-10-13T15:22:21.813Z"
+    },
+    {
+      "id": "g_mv6txseo_czfutr",
+      "game_id": "g_mv6trafw_cylobp",
+      "team": "home",
+      "player_id": "g_mv6tt2zi_lzwyr6",
+      "type": "STL",
+      "period": 1,
+      "clock": "08:31",
+      "zone": "",
+      "created_at": "2026-10-13T15:22:24.913Z"
+    },
+    {
+      "id": "g_mv6txwmx_p19e57",
+      "game_id": "g_mv6trafw_cylobp",
+      "team": "home",
+      "player_id": "g_mv6tto71_fwkv66",
+      "type": "AST",
+      "period": 1,
+      "clock": "08:20",
+      "zone": "",
+      "created_at": "2026-10-13T15:22:30.393Z"
+    },
+    {
+      "id": "g_mv6txzk9_2ivf2o",
+      "game_id": "g_mv6trafw_cylobp",
+      "team": "home",
+      "player_id": "g_mv6trm5j_h7k3t7",
+      "type": "3PM",
+      "period": 1,
+      "clock": "08:12",
+      "zone": "3_TOP",
+      "created_at": "2026-10-13T15:22:34.185Z"
+    },
+    {
+      "id": "g_mv6ty7ur_1c2pje",
+      "game_id": "g_mv6trafw_cylobp",
+      "team": "away",
+      "player_id": "g_mv6tugmi_mi91up",
+      "type": "FOUL_DRAWN",
+      "period": 1,
+      "clock": "07:51",
+      "zone": "",
+      "created_at": "2026-10-13T15:22:44.931Z"
+    },
+    {
+      "id": "g_mv6ty9ff_6xcgbl",
+      "game_id": "g_mv6trafw_cylobp",
+      "team": "away",
+      "player_id": "g_mv6tugmi_mi91up",
+      "type": "2PM",
+      "period": 1,
+      "clock": "07:47",
+      "zone": "AREA",
+      "created_at": "2026-10-13T15:22:46.972Z"
+    },
+    {
+      "id": "g_mv6tyfn3_6top1c",
+      "game_id": "g_mv6trafw_cylobp",
+      "team": "away",
+      "player_id": "g_mv6tugmi_mi91up",
+      "type": "FTA",
+      "period": 1,
+      "clock": "07:43",
+      "zone": "",
+      "created_at": "2026-10-13T15:22:55.023Z"
+    },
+    {
+      "id": "g_mv6tyjd4_52scy2",
+      "game_id": "g_mv6trafw_cylobp",
+      "team": "home",
+      "player_id": "g_mv6ttdj4_00fxji",
+      "type": "DREB",
+      "period": 1,
+      "clock": "07:37",
+      "zone": "",
+      "created_at": "2026-10-13T15:22:59.848Z"
+    },
+    {
+      "id": "g_mv6tz444_hrff1z",
+      "game_id": "g_mv6trafw_cylobp",
+      "team": "home",
+      "player_id": "g_mv6tsu1c_tn0onc",
+      "type": "AST",
+      "period": 1,
+      "clock": "07:08",
+      "zone": "",
+      "created_at": "2026-10-13T15:23:26.740Z"
+    },
+    {
+      "id": "g_mv6tz8la_k17svd",
+      "game_id": "g_mv6trafw_cylobp",
+      "team": "home",
+      "player_id": "g_mv6trm5j_h7k3t7",
+      "type": "2PM",
+      "period": 1,
+      "clock": "06:57",
+      "zone": "MID_CENTRE",
+      "created_at": "2026-10-13T15:23:32.542Z"
+    },
+    {
+      "id": "g_mv6tzdme_51bvcz",
+      "game_id": "g_mv6trafw_cylobp",
+      "team": "home",
+      "player_id": "g_mv6trm5j_h7k3t7",
+      "type": "BLK",
+      "period": 1,
+      "clock": "06:44",
+      "zone": "",
+      "created_at": "2026-10-13T15:23:39.062Z"
+    },
+    {
+      "id": "g_mv6tzig8_b3kid1",
+      "game_id": "g_mv6trafw_cylobp",
+      "team": "away",
+      "player_id": "g_mv6tubfj_74sdqd",
+      "type": "2PA",
+      "period": 1,
+      "clock": "06:31",
+      "zone": "MID_HIGH_L",
+      "created_at": "2026-10-13T15:23:45.320Z"
+    }
+  ]
+}
