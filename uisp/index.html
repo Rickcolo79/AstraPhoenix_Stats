@@ -50,10 +50,18 @@ const zoneNames={AREA:'Area',MID_LOW_L:'Midrange basso sx',MID_HIGH_L:'Midrange 
 const typePts={ '2PM':2,'3PM':3,'FTM':1 };
 function normalizePayload(x,filename){
  let games=[],players=[],events=[];
- if(Array.isArray(x.games)){games=x.games;players=x.players||[];events=x.events||[]}
- else if(x.game){games=[x.game];players=x.players||[];events=x.events||[]}
- else if(x.id && (x.opponent||x.avversario)){games=[x];players=x.players||[];events=x.events||[]}
- else throw Error('Formato JSON non riconosciuto in '+filename);
+ // Accetta sia backup completi sia export di una singola partita.
+ // Alcuni file possono contenere games:[] insieme a game: {...}: in quel caso
+ // non bisogna scartare la partita singola solo perché esiste l'array vuoto.
+ if(x && x.game && (!Array.isArray(x.games) || x.games.length===0)){
+  games=[x.game];players=Array.isArray(x.players)?x.players:[];events=Array.isArray(x.events)?x.events:[];
+ }else if(Array.isArray(x.games)){
+  games=x.games;players=Array.isArray(x.players)?x.players:[];events=Array.isArray(x.events)?x.events:[];
+ }else if(x && (x.id || x.game_id) && (x.opponent||x.avversario||x.date||x.data)){
+  games=[x];players=Array.isArray(x.players)?x.players:[];events=Array.isArray(x.events)?x.events:[];
+ }else if(x && x.data && (x.data.game || Array.isArray(x.data.games))){
+  return normalizePayload(x.data,filename);
+ }else throw Error('Formato JSON non riconosciuto in '+filename);
  // Single-game export may wrap player/event records with game_id omitted.
  const gidMap=new Set(games.map(g=>g.id));
  const defaultId=games.length===1?games[0].id:null;
@@ -157,9 +165,13 @@ function allPlayerRows(){
   }}
  }
  return Object.values(groups).map(r=>{const s=r.sum,MIN=r.minuteGames.length?r.minuteGames.reduce((a,b)=>a+b,0):null,PLUSMINUS=r.pmGames.length?r.pmGames.reduce((a,b)=>a+b,0):null;
+  // Presenze: conta le partite in cui il giocatore è presente nel roster, anche se non ha registrato eventi statistici.
+  // Usa gli ID delle partite caricate e non gli eventi (un giocatore può giocare senza segnare o avere eventi).
+  const playerNameKey=String(r.p.name||'').trim().toLocaleLowerCase('it-IT');
+  const GP=new Set(P.filter(q=>q.team===team&&String(q.name||'').trim().toLocaleLowerCase('it-IT')===playerNameKey&&ids.has(String(q.game_id))).map(q=>String(q.game_id))).size;
   const usgNum=r.usgInputs.reduce((a,x)=>a+(x.fga+.44*x.fta+x.tov)*(x.teamMinutes/5),0),usgDen=r.usgInputs.reduce((a,x)=>a+x.min*(x.tmFGA+.44*x.tmFTA+x.tmTOV),0);
   const USG=usgDen>0?100*usgNum/usgDen:null;
-  return {p:r.p,GP:r.games.size,...s,FGP:s.FGA?100*s.FGM/s.FGA:null,P2:s['2PA']?100*s['2PM']/s['2PA']:null,P3:s['3PA']?100*s['3PM']/s['3PA']:null,PFT:s.FTA?100*s.FTM/s.FTA:null,eFG:s.FGA?100*(s.FGM+.5*s['3PM'])/s.FGA:null,TS:(s.FGA+.44*s.FTA)?100*s.PTS/(2*(s.FGA+.44*s.FTA)):null,ASTTOV:s.TOV?s.AST/s.TOV:null,MIN, MING:MIN!==null&&r.minuteGames.length?MIN/r.minuteGames.length:null,PTS36:MIN>0?s.PTS/(MIN/36):null,PLUSMINUS,PMAVG:r.pmGames.length?PLUSMINUS/r.pmGames.length:null,USG,starterGames:r.starterGames,benchGames:r.benchGames};
+  return {p:r.p,GP,...s,FGP:s.FGA?100*s.FGM/s.FGA:null,P2:s['2PA']?100*s['2PM']/s['2PA']:null,P3:s['3PA']?100*s['3PM']/s['3PA']:null,PFT:s.FTA?100*s.FTM/s.FTA:null,eFG:s.FGA?100*(s.FGM+.5*s['3PM'])/s.FGA:null,TS:(s.FGA+.44*s.FTA)?100*s.PTS/(2*(s.FGA+.44*s.FTA)):null,ASTTOV:s.TOV?s.AST/s.TOV:null,MIN, MING:MIN!==null&&r.minuteGames.length?MIN/r.minuteGames.length:null,PTS36:MIN>0?s.PTS/(MIN/36):null,PLUSMINUS,PMAVG:r.pmGames.length?PLUSMINUS/r.pmGames.length:null,USG,starterGames:r.starterGames,benchGames:r.benchGames};
  }).sort((a,b)=>b.PTS-a.PTS);
 }
 function fillFilters(){
