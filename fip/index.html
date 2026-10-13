@@ -1,119 +1,221 @@
 <!doctype html>
-<html lang="it">
-<head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Astra Phoenix Stats — FIP</title>
+<html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Astra Phoenix Basketball Stats — FIP</title>
 <style>
-:root{--black:#17151b;--orange:#f58220;--purple:#633b87;--light:#f4f2f6}
-*{box-sizing:border-box}body{margin:0;background:var(--light);color:#211e25;font:15px/1.45 system-ui,-apple-system,Segoe UI,sans-serif}
-header{background:var(--black);color:white;padding:20px;border-bottom:5px solid var(--orange)}main{max-width:1100px;margin:auto;padding:16px}
-.panel{background:white;padding:16px;border:1px solid #ddd7e3;border-radius:10px;margin-bottom:14px}
-h1{margin:0}h2{margin-top:0}select,input{padding:9px;border:1px solid #ccc;border-radius:6px;margin:4px}
-table{border-collapse:collapse;width:100%;font-size:13px}td,th{padding:8px;border-bottom:1px solid #ddd;text-align:left;white-space:nowrap}th{background:#eee7f4}
-.wrap{overflow:auto}.muted{color:#666;font-size:13px}.filters{display:flex;gap:8px;flex-wrap:wrap}
-.badge{display:inline-block;background:#eee7f4;padding:3px 8px;border-radius:99px;margin-right:6px}
-</style></head>
-<body><header><h1>🏀 Astra Phoenix Basketball Stats — FIP</h1><p>Archivio pubblico · sola consultazione</p></header>
+:root{--ink:#201d24;--orange:#f58220;--purple:#633b87;--paper:#f5f3f7;--line:#ded8e4}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:14px/1.45 system-ui,-apple-system,Segoe UI,sans-serif}
+header{background:var(--ink);color:#fff;padding:22px 18px;border-bottom:5px solid var(--orange)}header h1{margin:0;font-size:clamp(21px,4vw,32px)}header p{margin:6px 0 0;color:#e8e2ed}
+main{max-width:1400px;margin:auto;padding:16px}.panel{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px;margin:0 0 15px;box-shadow:0 2px 8px #00000008}
+h2{font-size:20px;margin:0 0 12px}h3{font-size:16px;margin:16px 0 8px}.filters{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:9px}
+label{font-size:12px;font-weight:700;color:#555;display:block}select,input,button{width:100%;padding:9px;border:1px solid #cfc7d7;border-radius:7px;background:white;color:inherit;font:inherit;margin-top:4px}
+button{background:var(--purple);color:white;border:0;cursor:pointer;font-weight:700}.muted{color:#6a6570;font-size:12px}.status{padding:8px;background:#f3eef7;border-radius:7px;margin-top:10px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:10px}.card{background:#f8f5fa;border:1px solid var(--line);border-radius:9px;padding:12px}.card b{display:block;font-size:25px;color:var(--purple)}.card span{font-size:12px;color:#625a68}
+.scroll{overflow:auto}table{border-collapse:collapse;width:100%;font-size:12px}th,td{padding:8px 9px;border-bottom:1px solid #e6e0e9;text-align:left;white-space:nowrap}th{background:#eee8f4;position:sticky;top:0;cursor:pointer}tbody tr:hover{background:#faf7fc}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}.tabs button{width:auto}.hidden{display:none}.pill{display:inline-block;border-radius:99px;background:#eee8f4;padding:3px 8px;margin:2px}
+@media(max-width:600px){main{padding:9px}.panel{padding:11px}}
+</style></head><body>
+<header><h1>🏀 Astra Phoenix Basketball Stats — FIP</h1><p>Consultazione statistica · archivio FIP</p></header>
 <main>
-<div class="panel"><h2>Archivio partite</h2><p class="muted">Il sito individua automaticamente i file JSON pubblicati nella cartella data/partite/. Non serve modificare manifest.json.</p>
-<div class="filters"><select id="season"><option value="">Tutte le stagioni</option></select><select id="game"><option value="">Tutte le partite</option></select><input id="search" placeholder="Cerca avversario"><button id="reload">Aggiorna dati</button></div><p id="status" class="muted">Caricamento...</p></div>
-<div class="panel"><h2>Risultati</h2><div class="wrap"><table><thead><tr><th>Data</th><th>Stagione</th><th>Fase</th><th>Casa/Trasferta</th><th>Avversario</th><th>Risultato Astra</th><th>Risultato avversario</th><th>Stato</th></tr></thead><tbody id="games"></tbody></table></div></div>
-<div class="panel"><h2>Statistiche individuali</h2><div class="wrap"><table><thead><tr><th>Giocatore</th><th>Partite</th><th>PTS</th><th>2PM</th><th>3PM</th><th>FTM</th><th>REB</th><th>AST</th><th>STL</th><th>BLK</th><th>TOV</th><th>PF</th></tr></thead><tbody id="players"></tbody></table></div></div>
-<div class="panel"><h2>Dettaglio partita selezionata</h2><p id="detail" class="muted">Seleziona una partita dal filtro.</p><div class="wrap"><table><thead><tr><th>Giocatore</th><th>Squadra</th><th>Numero</th><th>Eventi registrati</th></tr></thead><tbody id="detailplayers"></tbody></table></div></div>
+<section class="panel"><h2>Filtri</h2><div class="filters">
+<div><label for="season">Stagione</label><select id="season"><option value="">Tutte</option></select></div>
+<div><label for="phase">Fase</label><select id="phase"><option value="">Tutte</option></select></div>
+<div><label for="game">Partita</label><select id="game"><option value="">Tutte</option></select></div>
+<div><label for="opponent">Avversario</label><select id="opponent"><option value="">Tutti</option></select></div>
+<div><label for="from">Data da</label><input id="from" type="date"></div>
+<div><label for="to">Data a</label><input id="to" type="date"></div>
+<div><label for="venue">Casa/trasferta</label><select id="venue"><option value="">Tutte</option><option value="home">Casa</option><option value="away">Trasferta</option></select></div>
+<div><label for="period">Periodo</label><select id="period"><option value="">Tutti</option><option value="1">Q1</option><option value="2">Q2</option><option value="3">Q3</option><option value="4">Q4</option><option value="5">OT1</option><option value="6">OT2</option><option value="7">OT3</option></select></div>
+<div><label for="team">Squadra</label><select id="team"><option value="home">Astra Phoenix</option><option value="away">Avversari</option></select></div>
+<div><label for="player">Giocatore</label><select id="player"><option value="">Tutti i giocatori</option></select></div>
+<div><label for="role">Ruolo iniziale</label><select id="role"><option value="">Tutti</option><option value="starter">Titolari</option><option value="bench">Panchina</option></select></div>
+</div><div class="tabs"><button id="apply">Applica filtri</button><button id="reset">Azzera filtri</button><button id="reload">Ricarica archivio</button></div><div id="status" class="status">Caricamento dati…</div>
+<p class="muted">Non vengono mostrate metriche di squadra basate sui possessi (Pace, Offensive/Defensive Rating, Net Rating e Four Factors). USG% è una stima individuale convenzionale calcolata solo quando minuti e dati di squadra sono sufficienti.</p></section>
+
+<section class="panel"><h2>Dashboard</h2><div id="cards" class="cards"></div><h3>Risultati</h3><div class="scroll"><table><thead><tr><th>Data</th><th>Stagione</th><th>Fase</th><th>Casa/trasferta</th><th>Avversario</th><th>Astra</th><th>Avversari</th><th>Stato</th></tr></thead><tbody id="games-body"></tbody></table></div></section>
+
+<section class="panel"><h2>Statistiche individuali</h2><p class="muted">Clicca sulle intestazioni per ordinare. Il filtro giocatore si applica anche a questa tabella.</p><div class="scroll"><table><thead id="stats-head"></thead><tbody id="stats-body"></tbody></table></div></section>
+<section class="panel"><h2>Confronto giocatori</h2><div class="filters"><div><label>Giocatore 1</label><select id="compare1"></select></div><div><label>Giocatore 2</label><select id="compare2"></select></div></div><div class="scroll"><table><thead id="compare-head"></thead><tbody id="compare-body"></tbody></table></div></section>
+<section class="panel"><h2>Analisi tiri — 11 zone</h2><div class="scroll"><table><thead><tr><th>Zona</th><th>Tentati</th><th>Realizzati</th><th>Sbagliati</th><th>%</th><th>Punti</th><th>% tentativi</th></tr></thead><tbody id="shots-body"></tbody></table></div></section>
+<section class="panel"><h2>Statistiche per quarto</h2><div class="scroll"><table><thead><tr><th>Periodo</th><th>Punti Astra</th><th>Punti avversari</th><th>Differenza Astra</th></tr></thead><tbody id="period-body"></tbody></table></div></section>
+<section class="panel"><h2>Dettaglio giocatore / partita</h2><p id="detail-note" class="muted">Scegli un giocatore o una partita usando i filtri sopra.</p><div class="scroll"><table><thead><tr><th>Data</th><th>Partita</th><th>Giocatore</th><th>MIN*</th><th>+/-</th><th>PTS</th><th>REB</th><th>AST</th><th>TOV</th><th>FG%</th><th>eFG%</th><th>TS%</th></tr></thead><tbody id="detail-body"></tbody></table></div><p class="muted">* MIN, +/− e USG% sono calcolati solo se entrambe le squadre hanno esattamente cinque titolari registrati e tutte le sostituzioni sono presenti. USG% è una stima convenzionale; se mancano dati il valore è N/D.</p></section>
 </main>
 <script>
-const BASE='data/partite/';
-let allGames=[],allPlayers=[],allEvents=[],gameFiles=[];
+const OWNER='Rickcolo79',REPO='AstraPhoenix_Stats',BRANCH='main',DIR='fip/data/partite/';
 const $=id=>document.getElementById(id);
-const norm=s=>(s||'').toString().toLowerCase();
-const teamName=t=>t==='home'?'Astra Phoenix':t==='away'?'Avversario':(t||'');
-function field(g,...keys){for(const k of keys)if(g[k]!==undefined&&g[k]!==null&&g[k]!=='')return g[k];return ''}
-const OWNER='Rickcolo79',REPO='AstraPhoenix_Stats',BRANCH='main';
-const COMPETITION='FIP';
-const API_PATH='fip/data/partite';
-async function loadData(){
- $('status').textContent='Ricerca automatica dei file JSON...';
+let G=[],P=[],E=[],allFiles=[],sortKey='PTS',sortDesc=true;
+const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const val=(o,...ks)=>{for(const k of ks)if(o&&o[k]!==undefined&&o[k]!==null&&o[k]!=='')return o[k];return ''};
+const pct=(a,b)=>b?`${(100*a/b).toFixed(1)}%`:'N/D';
+const avg=(a,b)=>b?(a/b).toFixed(1):'N/D';
+const zoneNames={AREA:'Area',MID_LOW_L:'Midrange basso sx',MID_HIGH_L:'Midrange alto sx',MID_CENTRE:'Midrange centro',MID_HIGH_R:'Midrange alto dx',MID_LOW_R:'Midrange basso dx','3_CORNER_L':'3 punti angolo sx','3_WING_L':'3 punti alto sx','3_TOP':'3 punti centrale','3_WING_R':'3 punti alto dx','3_CORNER_R':'3 punti angolo dx'};
+const typePts={ '2PM':2,'3PM':3,'FTM':1 };
+function normalizePayload(x,filename){
+ let games=[],players=[],events=[];
+ if(Array.isArray(x.games)){games=x.games;players=x.players||[];events=x.events||[]}
+ else if(x.game){games=[x.game];players=x.players||[];events=x.events||[]}
+ else if(x.id && (x.opponent||x.avversario)){games=[x];players=x.players||[];events=x.events||[]}
+ else throw Error('Formato JSON non riconosciuto in '+filename);
+ // Single-game export may wrap player/event records with game_id omitted.
+ const gidMap=new Set(games.map(g=>g.id));
+ const defaultId=games.length===1?games[0].id:null;
+ players.forEach(p=>{if(!p.game_id&&defaultId)p.game_id=defaultId});
+ events.forEach(e=>{if(!e.game_id&&defaultId)e.game_id=defaultId});
+ G.push(...games.map(g=>({...g,_source:filename})));
+ P.push(...players);E.push(...events);
+}
+async function loadArchive(){
+ $('status').textContent='Cerco i JSON nella cartella '+DIR;
+ G=[];P=[];E=[];allFiles=[];
  try{
-  const api=`https://api.github.com/repos/${OWNER}/${REPO}/contents/${API_PATH}?ref=${BRANCH}`;
-  const lr=await fetch(api,{cache:'no-store'});
-  if(!lr.ok)throw new Error('GitHub API non disponibile ('+lr.status+').');
-  const listing=await lr.json();
-  const files=listing.filter(x=>x.type==='file'&&x.name.toLowerCase().endsWith('.json')&&x.name.toLowerCase()!=='manifest.json');
-  const results=await Promise.all(files.map(async item=>{
-    const r=await fetch(item.download_url,{cache:'no-store'});
-    if(!r.ok)throw new Error('Impossibile leggere '+item.name);
-    return {name:item.name,data:await r.json()};
-  }));
-  allGames=[];allPlayers=[];allEvents=[];
-  for(const item of results){
-    const p=item.data;
-    // Supported formats: a single-game export or a full compiler backup.
-    if(Array.isArray(p.games)){
-      const gs=p.games;
-      allGames.push(...gs.filter(g=>(g.competition||p.export_competition||COMPETITION)===COMPETITION));
-      const ids=new Set(gs.map(g=>g.id));
-      allPlayers.push(...(p.players||[]).filter(x=>ids.has(x.game_id)&&((gs.find(g=>g.id===x.game_id)||{}).competition||p.export_competition||COMPETITION)===COMPETITION));
-      allEvents.push(...(p.events||[]).filter(x=>ids.has(x.game_id)&&((gs.find(g=>g.id===x.game_id)||{}).competition||p.export_competition||COMPETITION)===COMPETITION));
-    }else if(p.game){
-      const g=p.game;
-      if((g.competition||p.competition||COMPETITION)===COMPETITION){
-        allGames.push(g);
-        allPlayers.push(...(p.players||[]).map(x=>({...x,game_id:x.game_id||g.id})));
-        allEvents.push(...(p.events||[]).map(x=>({...x,game_id:x.game_id||g.id})));
-      }
-    }
+  // GitHub's public Contents API lists files in this directory; no token is embedded in the site.
+  const url=`https://api.github.com/repos/${OWNER}/${REPO}/contents/${DIR}?ref=${BRANCH}`;
+  const r=await fetch(url,{cache:'no-store',headers:{Accept:'application/vnd.github+json'}});
+  if(!r.ok)throw Error('GitHub API ha risposto '+r.status+'. Controlla nome cartella e repository pubblico.');
+  const items=await r.json();
+  const files=items.filter(i=>i.type==='file'&&i.name.toLowerCase().endsWith('.json')&&i.name.toLowerCase()!=='manifest.json');
+  allFiles=files;
+  for(const f of files){
+   const rr=await fetch(f.download_url,{cache:'no-store'});if(!rr.ok)throw Error('Non riesco a leggere '+f.name);
+   normalizePayload(await rr.json(),f.name);
   }
-  // Deduplicate game/player/event records in case the same backup was uploaded twice.
-  const uniqueGames=new Map();allGames.forEach(g=>uniqueGames.set(g.id,g));allGames=[...uniqueGames.values()];
-  const validIds=new Set(allGames.map(g=>g.id));
-  allPlayers=allPlayers.filter(p=>validIds.has(p.game_id));
-  allEvents=allEvents.filter(e=>validIds.has(e.game_id));
-  fillFilters();render();$('status').textContent=`Caricate ${allGames.length} partite ${COMPETITION}. Lettura automatica dei JSON completata.`;
- }catch(e){$('status').textContent='Errore nel caricamento: '+e.message+'. Controlla che i JSON siano nella cartella corretta del repository pubblico.'}
+  // Deduplicate games by stable game id; duplicate uploads are reported.
+  const seen=new Set();G=G.filter(g=>{if(!g.id)return true;if(seen.has(g.id))return false;seen.add(g.id);return true});
+  $('status').textContent=`Caricati ${G.length} incontri da ${files.length} file JSON. Cartella: ${DIR}`;
+  fillFilters();renderAll();
+ }catch(e){$('status').textContent='Errore caricamento: '+e.message+' — Se la cartella è vuota, carica un JSON di partita o backup compatibile.';fillFilters();renderAll()}
+}
+function gameId(g){return String(val(g,'id','game_id'))}
+function evsFor(gs=filteredGames()){const ids=new Set(gs.map(gameId));return E.filter(e=>ids.has(String(e.game_id)))}
+function filteredGames(){
+ const season=$('season').value,phase=$('phase').value,game=$('game').value,opp=$('opponent').value,from=$('from').value,to=$('to').value,venue=$('venue').value;
+ return G.filter(g=>(!season||String(val(g,'season'))===season)&&(!phase||String(val(g,'phase'))===phase)&&(!game||gameId(g)===game)&&(!opp||String(val(g,'opponent','avversario'))===opp)&&(!from||String(val(g,'date','data'))>=from)&&(!to||String(val(g,'date','data'))<=to)&&(!venue||String(val(g,'venue','home_away'))===venue));
+}
+function selectedEvents(){
+ const gs=filteredGames(),ids=new Set(gs.map(gameId)),team=$('team').value,player=$('player').value,period=$('period').value,role=$('role').value;
+ return E.filter(e=>ids.has(String(e.game_id))&&(!team||e.team===team)&&(!period||String(e.period)===period)&&(!player||String((pFor(e)||{}).name)===player)).filter(e=>{
+  if(!role)return true;const p=P.find(p=>String(p.id)===String(e.player_id)&&String(p.game_id)===String(e.game_id));
+  return p && (role==='starter'?!!p.starter:!p.starter);
+ });
+}
+function pFor(e){return P.find(p=>String(p.id)===String(e.player_id)&&String(p.game_id)===String(e.game_id))}
+function statsFor(gid,pid,team){
+ const es=E.filter(e=>String(e.game_id)===String(gid)&&String(e.player_id)===String(pid)&&(!team||e.team===team));
+ const n=t=>es.filter(e=>e.type===t).length;
+ const two=n('2PM'),twoA=two+n('2PA'),three=n('3PM'),threeA=three+n('3PA'),ft=n('FTM'),ftA=ft+n('FTA'),fga=twoA+threeA,fgm=two+three,pts=2*two+3*three+ft,orb=n('OREB'),drb=n('DREB'),reb=orb+drb,ast=n('AST'),tov=n('TOV');
+ const fgmPct=fga?100*fgm/fga:null, efg=fga?100*(fgm+.5*three)/fga:null,ts=(fga+.44*ftA)?100*pts/(2*(fga+.44*ftA)):null;
+ const fouls=n('FOUL')+n('TECH')+n('UNSPORT');
+ return {GP:new Set(es.map(e=>e.game_id)).size,PTS:pts,MIN:null,FGM:fgm,FGA:fga,FGP:fgmPct,'2PM':two,'2PA':twoA,P2:twoA?100*two/twoA:null,'3PM':three,'3PA':threeA,P3:threeA?100*three/threeA:null,FTM:ft,FTA:ftA,PFT:ftA?100*ft/ftA:null,eFG:efg,TS:ts,AST:ast,OREB:orb,DREB:drb,REB:reb,TOV:tov,STL:n('STL'),BLK:n('BLK'),PF:fouls,FOUL_DRAWN:n('FOUL_DRAWN'),ASTTOV:tov?ast/tov:null,PTS36:null,PLUSMINUS:null,es};
+}
+function clockSeconds(clock){const m=String(clock||'').match(/^(\d{1,2}):(\d{2})$/);return m?Number(m[1])*60+Number(m[2]):null}
+function periodLength(period){return Number(period)<=4?600:300}
+function lineupMetrics(gid){
+ const gamePlayers=P.filter(p=>String(p.game_id)===String(gid));
+ const gameEvents=E.filter(e=>String(e.game_id)===String(gid));
+ const teams=['home','away'];
+ const lineup={home:new Set(gamePlayers.filter(p=>p.team==='home'&&p.starter).map(p=>String(p.id))),away:new Set(gamePlayers.filter(p=>p.team==='away'&&p.starter).map(p=>String(p.id)))};
+ if(lineup.home.size!==5||lineup.away.size!==5)return {valid:false,mins:{},pm:{}};
+ const mins={},pm={};gamePlayers.forEach(p=>{mins[String(p.id)]=0;pm[String(p.id)]=0});
+ const maxPeriod=Math.max(0,...gameEvents.map(e=>Number(e.period)||0));const periods=Array.from({length:maxPeriod},(_,i)=>i+1);
+ if(!periods.length)return {valid:false,mins:{},pm:{}};
+ for(const period of periods){
+  const length=periodLength(period);let last=length;
+  const pe=gameEvents.filter(e=>Number(e.period)===period).map((e,i)=>({...e,_idx:i,_sec:clockSeconds(e.clock)}));
+  if(pe.some(e=>e._sec===null||e._sec>length))return {valid:false,mins:{},pm:{}};
+  pe.sort((a,b)=>b._sec-a._sec||String(a.created_at||'').localeCompare(String(b.created_at||''))||a._idx-b._idx);
+  for(const e of pe){const sec=e._sec,delta=Math.max(0,last-sec);for(const t of teams)for(const id of lineup[t])mins[id]=(mins[id]||0)+delta;
+   if(['2PM','3PM','FTM'].includes(e.type)){
+    const pts=typePts[e.type]||0;
+    for(const id of lineup[e.team]||[])pm[id]=(pm[id]||0)+pts;
+    const opp=e.team==='home'?'away':'home';for(const id of lineup[opp])pm[id]=(pm[id]||0)-pts;
+   }
+   if(e.type==='SUB_OUT')lineup[e.team]?.delete(String(e.player_id));
+   if(e.type==='SUB_IN')lineup[e.team]?.add(String(e.player_id));
+   // Fail closed if a recorded substitution leaves an impossible lineup.
+   if(lineup.home.size!==5||lineup.away.size!==5)return {valid:false,mins:{},pm:{}};
+   last=sec;
+  }
+  for(const t of teams)for(const id of lineup[t])mins[id]=(mins[id]||0)+last;
+ }
+ return {valid:true,mins,pm};
+}
+function allPlayerRows(){
+ const gs=filteredGames(),ids=new Set(gs.map(gameId)),team=$('team').value,selPlayer=$('player').value,period=$('period').value,role=$('role').value;
+ const ps=P.filter(p=>ids.has(String(p.game_id))&&p.team===team&&(!selPlayer||String(p.name)===selPlayer)&&(!role||(role==='starter'?!!p.starter:!p.starter)));
+ const unique=new Map();ps.forEach(p=>unique.set(String(p.id)+'|'+String(p.game_id),p));
+ const groups={};
+ for(const p of unique.values()){
+  const k=String(p.name||'').trim().toLocaleLowerCase('it-IT');if(!groups[k])groups[k]={p, sum:{GP:0,PTS:0,FGM:0,FGA:0,'2PM':0,'2PA':0,'3PM':0,'3PA':0,FTM:0,FTA:0,AST:0,OREB:0,DREB:0,REB:0,TOV:0,STL:0,BLK:0,PF:0,FOUL_DRAWN:0},games:new Set(),starterGames:0,benchGames:0,minuteGames:[],pmGames:[],usgInputs:[]};
+  const row=groups[k],g=gs.find(g=>gameId(g)===String(p.game_id));if(!g)continue;
+  const ev=E.filter(e=>String(e.game_id)===String(p.game_id)&&String(e.player_id)===String(p.id)&&(!period||String(e.period)===period));
+  if(!ev.length&&period)continue;
+  row.games.add(String(p.game_id));if(p.starter)row.starterGames++;else row.benchGames++;
+  const n=t=>ev.filter(e=>e.type===t).length,two=n('2PM'),twoA=two+n('2PA'),three=n('3PM'),threeA=three+n('3PA'),ft=n('FTM'),ftA=ft+n('FTA'),fga=twoA+threeA,fgm=two+three,pts=2*two+3*three+ft,tov=n('TOV');
+  const add={PTS:pts,FGM:fgm,FGA:fga,'2PM':two,'2PA':twoA,'3PM':three,'3PA':threeA,FTM:ft,FTA:ftA,AST:n('AST'),OREB:n('OREB'),DREB:n('DREB'),REB:n('OREB')+n('DREB'),TOV:tov,STL:n('STL'),BLK:n('BLK'),PF:n('FOUL')+n('TECH')+n('UNSPORT'),FOUL_DRAWN:n('FOUL_DRAWN')};Object.keys(add).forEach(x=>row.sum[x]+=add[x]);
+  if(!period){const lm=lineupMetrics(p.game_id);if(lm.valid){const min=(lm.mins[String(p.id)]||0)/60;row.minuteGames.push(min);row.pmGames.push(lm.pm[String(p.id)]||0);
+    const teamP=P.filter(x=>String(x.game_id)===String(p.game_id)&&x.team===team),teamE=E.filter(e=>String(e.game_id)===String(p.game_id)&&e.team===team);const gameLen=[...new Set(E.filter(e=>String(e.game_id)===String(p.game_id)).map(e=>Number(e.period)||1))].reduce((a,per)=>a+periodLength(per),0);
+    const tn=t=>teamE.filter(e=>e.type===t).length,teamFGA=tn('2PM')+tn('2PA')+tn('3PM')+tn('3PA'),teamFTA=tn('FTM')+tn('FTA'),teamTOV=tn('TOV');
+    row.usgInputs.push({min, fga, fta:ftA, tov, tmFGA:teamFGA,tmFTA:teamFTA,tmTOV:teamTOV,teamMinutes:gameLen*5,teamPlayers:teamP.length});
+  }}
+ }
+ return Object.values(groups).map(r=>{const s=r.sum,MIN=r.minuteGames.length?r.minuteGames.reduce((a,b)=>a+b,0):null,PLUSMINUS=r.pmGames.length?r.pmGames.reduce((a,b)=>a+b,0):null;
+  const usgNum=r.usgInputs.reduce((a,x)=>a+(x.fga+.44*x.fta+x.tov)*(x.teamMinutes/5),0),usgDen=r.usgInputs.reduce((a,x)=>a+x.min*(x.tmFGA+.44*x.tmFTA+x.tmTOV),0);
+  const USG=usgDen>0?100*usgNum/usgDen:null;
+  return {p:r.p,GP:r.games.size,...s,FGP:s.FGA?100*s.FGM/s.FGA:null,P2:s['2PA']?100*s['2PM']/s['2PA']:null,P3:s['3PA']?100*s['3PM']/s['3PA']:null,PFT:s.FTA?100*s.FTM/s.FTA:null,eFG:s.FGA?100*(s.FGM+.5*s['3PM'])/s.FGA:null,TS:(s.FGA+.44*s.FTA)?100*s.PTS/(2*(s.FGA+.44*s.FTA)):null,ASTTOV:s.TOV?s.AST/s.TOV:null,MIN, MING:MIN!==null&&r.minuteGames.length?MIN/r.minuteGames.length:null,PTS36:MIN>0?s.PTS/(MIN/36):null,PLUSMINUS,PMAVG:r.pmGames.length?PLUSMINUS/r.pmGames.length:null,USG,starterGames:r.starterGames,benchGames:r.benchGames};
+ }).sort((a,b)=>b.PTS-a.PTS);
 }
 function fillFilters(){
- const oldSeason=$('season').value,oldGame=$('game').value;
- const seasons=[...new Set(allGames.map(g=>field(g,'season','stagione')).filter(Boolean))].sort();
- $('season').innerHTML='<option value="">Tutte le stagioni</option>'+seasons.map(s=>`<option>${esc(s)}</option>`).join('');
- $('season').value=seasons.includes(oldSeason)?oldSeason:'';
- $('game').innerHTML='<option value="">Tutte le partite</option>'+allGames.map(g=>`<option value="${esc(g.id)}">${esc(field(g,'date','data'))} · ${esc(field(g,'opponent','avversario'))}</option>`).join('');
- $('game').value=allGames.some(g=>g.id===oldGame)?oldGame:'';
+ const set=(id,vals,first)=>{let old=$(id).value;$(id).innerHTML=`<option value="">${first}</option>`+[...new Set(vals.filter(x=>x!==''&&x!==null&&x!==undefined).map(String))].sort().map(v=>`<option value="${esc(v)}">${esc(v)}</option>`).join('');if([...$(id).options].some(o=>o.value===old))$(id).value=old};
+ set('season',G.map(g=>val(g,'season')),'Tutte');set('phase',G.map(g=>val(g,'phase')),'Tutte');
+ const old=$('game').value;$('game').innerHTML='<option value="">Tutte</option>'+G.map(g=>`<option value="${esc(gameId(g))}">${esc(val(g,'date','data'))} · ${esc(val(g,'opponent','avversario'))}</option>`).join('');$('game').value=G.some(g=>gameId(g)===old)?old:'';
+ set('opponent',G.map(g=>val(g,'opponent','avversario')),'Tutti');
+ const team=$('team').value,ps=P.filter(p=>p.team===team);const seen=new Map();ps.forEach(p=>seen.set(String(p.name).trim().toLocaleLowerCase('it-IT'),p));
+ const playerOpts=[...seen.values()];$('player').innerHTML='<option value="">Tutti i giocatori</option>'+playerOpts.map(p=>`<option value="${esc(p.name)}">${esc(p.name)} (#${esc(p.number||'—')})</option>`).join('');
+ ['compare1','compare2'].forEach(id=>{$(id).innerHTML=playerOpts.map(p=>`<option value="${esc(p.name)}">${esc(p.name)}</option>`).join('')});
 }
-function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function eventCount(pid,gid){return allEvents.filter(e=>e.game_id===gid&&e.player_id===pid).length}
-function render(){
- const season=$('season').value,selected=$('game').value,q=norm($('search').value);
- const games=allGames.filter(g=>(!season||String(field(g,'season','stagione'))===season)&&(!selected||g.id===selected)&&norm(field(g,'opponent','avversario')).includes(q));
- $('games').innerHTML=games.map(g=>`<tr><td>${esc(field(g,'date','data'))}</td><td>${esc(field(g,'season','stagione'))}</td><td>${esc(field(g,'phase','fase'))}</td><td>${esc(field(g,'home_away','venue','casa_trasferta'))}</td><td>${esc(field(g,'opponent','avversario'))}</td><td>${esc(field(g,'astra_score')||0)}</td><td>${esc(field(g,'opponent_score')||0)}</td><td>${esc(field(g,'status','stato'))}</td></tr>`).join('');
- const visibleIds=new Set(games.map(g=>g.id));
- const sums={};
- allPlayers.filter(p=>visibleIds.has(p.game_id)).forEach(p=>{
-  const key=p.id||p.player_id||p.name; if(!sums[key])sums[key]={name:field(p,'name','nome'),games:new Set(),pts:0,twom:0,threem:0,ftm:0,reb:0,ast:0,stl:0,blk:0,tov:0,pf:0};
-  sums[key].games.add(p.game_id);
- });
- const aliases={
-  '2PM':['2PM','2pt_made','2p_made','FG2M'],'3PM':['3PM','3pt_made','3p_made','FG3M'],'FTM':['FTM','ft_made','1PM'],
-  'REB':['REB','rebound','rebound_def','rebound_off'],'AST':['AST','assist'],'STL':['STL','steal'],'BLK':['BLK','block'],'TOV':['TOV','turnover'],'PF':['PF','foul_committed']
- };
- allEvents.filter(e=>visibleIds.has(e.game_id)).forEach(e=>{
-  const p=allPlayers.find(x=>x.game_id===e.game_id&&x.id===e.player_id);if(!p)return;
-  const key=p.id||p.player_id||p.name,s=sums[key];if(!s)return;
-  const t=String(e.type||'').toUpperCase();
-  if(['2PM','2PT_MADE','2P_MADE','FG2M'].includes(t)){s.twom++;s.pts+=2}
-  if(['3PM','3PT_MADE','3P_MADE','FG3M'].includes(t)){s.threem++;s.pts+=3}
-  if(['FTM','FT_MADE','1PM'].includes(t)){s.ftm++;s.pts++}
-  if(['REB','REBOUND','REBOUND_DEF','REBOUND_OFF'].includes(t))s.reb++;
-  if(['AST','ASSIST'].includes(t))s.ast++;
-  if(['STL','STEAL'].includes(t))s.stl++;
-  if(['BLK','BLOCK'].includes(t))s.blk++;
-  if(['TOV','TURNOVER'].includes(t))s.tov++;
-  if(['PF','FOUL_COMMITTED'].includes(t))s.pf++;
- });
- $('players').innerHTML=Object.values(sums).sort((a,b)=>b.pts-a.pts).map(s=>`<tr><td>${esc(s.name)}</td><td>${s.games.size}</td><td>${s.pts}</td><td>${s.twom}</td><td>${s.threem}</td><td>${s.ftm}</td><td>${s.reb}</td><td>${s.ast}</td><td>${s.stl}</td><td>${s.blk}</td><td>${s.tov}</td><td>${s.pf}</td></tr>`).join('');
- const g=allGames.find(x=>x.id===selected);
- $('detail').textContent=g?`${field(g,'date','data')} · ${field(g,'opponent','avversario')} · ${field(g,'astra_score')||0}-${field(g,'opponent_score')||0}`:'Seleziona una partita dal filtro.';
- const ps=selected?allPlayers.filter(p=>p.game_id===selected):[];
- $('detailplayers').innerHTML=ps.map(p=>`<tr><td>${esc(field(p,'name','nome'))}</td><td>${esc(teamName(p.team))}</td><td>${esc(field(p,'number','numero'))}</td><td>${eventCount(p.id,selected)}</td></tr>`).join('');
+function renderDashboard(gs,rows){
+ const events=evsFor(gs),astra=gs.reduce((s,g)=>s+Number(val(g,'astra_score')||0),0),opp=gs.reduce((s,g)=>s+Number(val(g,'opponent_score')||0),0);
+ const wins=gs.filter(g=>Number(val(g,'astra_score')||0)>Number(val(g,'opponent_score')||0)).length;
+ const cards=[['Partite',gs.length],['Vittorie',wins],['Sconfitte',gs.length-wins],['% vittorie',gs.length?pct(wins,gs.length):'N/D'],['Punti Astra',astra],['Punti avversari',opp],['Differenza punti',astra-opp],['Media punti Astra',avg(astra,gs.length)]];
+ $('cards').innerHTML=cards.map(c=>`<div class="card"><span>${esc(c[0])}</span><b>${esc(c[1])}</b></div>`).join('');
+ $('games-body').innerHTML=gs.map(g=>`<tr><td>${esc(val(g,'date','data'))}</td><td>${esc(val(g,'season'))}</td><td>${esc(val(g,'phase'))}</td><td>${esc(val(g,'venue'))}</td><td>${esc(val(g,'opponent','avversario'))}</td><td>${esc(val(g,'astra_score')||0)}</td><td>${esc(val(g,'opponent_score')||0)}</td><td>${esc(val(g,'status'))}</td></tr>`).join('')||'<tr><td colspan="8">Nessuna partita per i filtri selezionati.</td></tr>';
 }
-$('season').onchange=render;$('game').onchange=render;$('search').oninput=render;$('reload').onclick=loadData;loadData();
+const cols=[['Giocatore','name'],['Partite','GP'],['PTS','PTS'],['PTS/G','PPG'],['2PM','2PM'],['2PA','2PA'],['2P%','P2'],['3PM','3PM'],['3PA','3PA'],['3P%','P3'],['FTM','FTM'],['FTA','FTA'],['FT%','PFT'],['FGM','FGM'],['FGA','FGA'],['FG%','FGP'],['eFG%','eFG'],['TS%','TS'],['AST','AST'],['OREB','OREB'],['DREB','DREB'],['REB','REB'],['TOV','TOV'],['AST/TOV','ASTTOV'],['STL','STL'],['BLK','BLK'],['Falli','PF'],['Falli subiti','FOUL_DRAWN'],['MIN totali','MIN'],['MIN/G','MING'],['PTS/36','PTS36'],['Plus/minus','PLUSMINUS'],['+/- medio','PMAVG'],['USG%','USG']];
+let lastRows=[];
+function fmt(v){return v===null||v===undefined?'N/D':typeof v==='number'?(Number.isInteger(v)?v:v.toFixed(2)):v}
+function renderStats(){
+ const gs=filteredGames(),rows=allPlayerRows();lastRows=rows;
+ $('stats-head').innerHTML='<tr>'+cols.map(([label,key])=>`<th data-key="${key}">${label} ↕</th>`).join('')+'</tr>';
+ const sorted=rows.slice().sort((a,b)=>{let av=sortKey==='name'?String(a.p.name||''):a[sortKey],bv=sortKey==='name'?String(b.p.name||''):b[sortKey];if(av==null)av=-Infinity;if(bv==null)bv=-Infinity;return (av>bv?1:av<bv?-1:0)*(sortDesc?-1:1)});
+ $('stats-body').innerHTML=sorted.map(r=>'<tr>'+cols.map(([label,k])=>`<td>${esc(k==='name'?r.p.name:fmt(k==='PPG'?(r.GP?r.PTS/r.GP:null):k==='MING'?(r.GP&&r.MIN!==null?r.MIN/r.GP:null):r[k]))}</td>`).join('')+'</tr>').join('')||`<tr><td colspan="${cols.length}">Nessun dato disponibile.</td></tr>`;
+ $('stats-head').querySelectorAll('th').forEach(th=>th.onclick=()=>{if(sortKey===th.dataset.key)sortDesc=!sortDesc;else{sortKey=th.dataset.key;sortDesc=true}renderStats()});
+ renderDashboard(gs,rows);renderShots(gs);renderPeriods(gs);renderCompare();
+ const sel=$('player').value,game=$('game').value;
+ $('detail-note').textContent=sel?'Dettaglio per il giocatore selezionato.':game?'Dettaglio della partita selezionata.':'Dettaglio aggregato secondo i filtri attuali.';
+ const ids=new Set(gs.map(gameId));const details=[];
+ rows.forEach(r=>{const pg=P.filter(p=>String(p.name)===String(r.p.name)&&ids.has(String(p.game_id))&&(!game||String(p.game_id)===game));pg.forEach(p=>{const g=gs.find(g=>gameId(g)===String(p.game_id));const s=statsFor(p.game_id,p.id,$('team').value);details.push({g,p,s})})});
+ $('detail-body').innerHTML=details.map(d=>`<tr><td>${esc(val(d.g,'date','data'))}</td><td>${esc(val(d.g,'opponent','avversario'))}</td><td>${esc(d.p.name)}</td><td>${fmt(lineupMetrics(d.p.game_id).valid?lineupMetrics(d.p.game_id).mins[String(d.p.id)]/60:null)}</td><td>${fmt(lineupMetrics(d.p.game_id).valid?lineupMetrics(d.p.game_id).pm[String(d.p.id)]:null)}</td><td>${d.s.PTS}</td><td>${d.s.REB}</td><td>${d.s.AST}</td><td>${d.s.TOV}</td><td>${d.s.FGP===null?'N/D':d.s.FGP.toFixed(1)+'%'}</td><td>${d.s.eFG===null?'N/D':d.s.eFG.toFixed(1)+'%'}</td><td>${d.s.TS===null?'N/D':d.s.TS.toFixed(1)+'%'}</td></tr>`).join('');
+}
+function renderShots(gs){
+ const ids=new Set(gs.map(gameId)),es=E.filter(e=>ids.has(String(e.game_id))&&e.team===$('team').value&&(! $('player').value||String((pFor(e)||{}).name)===$('player').value)&&(! $('period').value||String(e.period)===$('period').value));
+ const zones=Object.keys(zoneNames),rows=zones.map(z=>{const attempts=es.filter(e=>e.zone===z&&['2PM','2PA','3PM','3PA'].includes(e.type)),made=attempts.filter(e=>['2PM','3PM'].includes(e.type)).length,points=attempts.reduce((s,e)=>s+(typePts[e.type]||0),0);return {z,n:attempts.length,made,miss:attempts.length-made,p:attempts.length?100*made/attempts.length:null,points}});
+ const total=rows.reduce((s,r)=>s+r.n,0);
+ $('shots-body').innerHTML=rows.map(r=>`<tr><td>${esc(zoneNames[r.z])}</td><td>${r.n}</td><td>${r.made}</td><td>${r.miss}</td><td>${r.p===null?'N/D':r.p.toFixed(1)+'%'}</td><td>${r.points}</td><td>${total?pct(r.n,total):'N/D'}</td></tr>`).join('');
+}
+function renderPeriods(gs){
+ const ids=new Set(gs.map(gameId)),es=E.filter(e=>ids.has(String(e.game_id))&&(! $('player').value||String((pFor(e)||{}).name)===$('player').value));
+ const periods=[1,2,3,4,5,6,7].map(n=>{const pe=es.filter(e=>Number(e.period)===n);const pts=t=>pe.filter(e=>e.team===t).reduce((s,e)=>s+(typePts[e.type]||0),0);return {n,a:pts('home'),b:pts('away')}});
+ $('period-body').innerHTML=periods.filter(p=>p.a||p.b).map(p=>`<tr><td>${p.n<=4?'Q'+p.n:'OT'+(p.n-4)}</td><td>${p.a}</td><td>${p.b}</td><td>${p.a-p.b}</td></tr>`).join('')||'<tr><td colspan="4">Nessun evento per periodo.</td></tr>';
+}
+function renderCompare(){
+ const a=$('compare1').value,b=$('compare2').value,rows=lastRows;
+ const r1=rows.find(r=>String(r.p.name)===a),r2=rows.find(r=>String(r.p.name)===b);
+ const fields=[['PTS','PTS'],['Partite','GP'],['2P%','P2'],['3P%','P3'],['FT%','PFT'],['FG%','FGP'],['eFG%','eFG'],['TS%','TS'],['Rimbalzi','REB'],['Assist','AST'],['Palle perse','TOV'],['AST/TOV','ASTTOV'],['Recuperi','STL'],['Stoppate','BLK'],['Falli','PF']];
+ $('compare-head').innerHTML=`<tr><th>Statistica</th><th>${esc(r1?.p.name||'Giocatore 1')}</th><th>${esc(r2?.p.name||'Giocatore 2')}</th></tr>`;
+ $('compare-body').innerHTML=fields.map(([label,k])=>`<tr><td>${label}</td><td>${esc(fmt(r1?.[k]))}</td><td>${esc(fmt(r2?.[k]))}</td></tr>`).join('');
+}
+function renderAll(){renderStats()}
+['apply','reload'].forEach(id=>$(id).onclick=()=>id==='reload'?loadArchive():renderAll());
+$('reset').onclick=()=>{['season','phase','game','opponent','from','to','venue','period','player'].forEach(id=>$(id).value='');$('team').value='home';$('role').value='';fillFilters();renderAll()};
+$('team').onchange=()=>{fillFilters();renderAll()};
+['season','phase','game','opponent','from','to','venue','period','player','role','compare1','compare2'].forEach(id=>$(id).addEventListener('change',renderAll));
+loadArchive();
 </script></body></html>
