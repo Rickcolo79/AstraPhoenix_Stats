@@ -15,7 +15,7 @@ table{border-collapse:collapse;width:100%;font-size:13px}td,th{padding:8px;borde
 </style></head>
 <body><header><h1>🏀 Astra Phoenix Basketball Stats — UISP</h1><p>Archivio pubblico · sola consultazione</p></header>
 <main>
-<div class="panel"><h2>Archivio partite</h2><p class="muted">Il sito legge il manifest.json e i singoli file partita presenti nella cartella data/partite/.</p>
+<div class="panel"><h2>Archivio partite</h2><p class="muted">Il sito individua automaticamente i file JSON pubblicati nella cartella data/partite/. Non serve modificare manifest.json.</p>
 <div class="filters"><select id="season"><option value="">Tutte le stagioni</option></select><select id="game"><option value="">Tutte le partite</option></select><input id="search" placeholder="Cerca avversario"><button id="reload">Aggiorna dati</button></div><p id="status" class="muted">Caricamento...</p></div>
 <div class="panel"><h2>Risultati</h2><div class="wrap"><table><thead><tr><th>Data</th><th>Stagione</th><th>Fase</th><th>Casa/Trasferta</th><th>Avversario</th><th>Risultato Astra</th><th>Risultato avversario</th><th>Stato</th></tr></thead><tbody id="games"></tbody></table></div></div>
 <div class="panel"><h2>Statistiche individuali</h2><div class="wrap"><table><thead><tr><th>Giocatore</th><th>Partite</th><th>PTS</th><th>2PM</th><th>3PM</th><th>FTM</th><th>REB</th><th>AST</th><th>STL</th><th>BLK</th><th>TOV</th><th>PF</th></tr></thead><tbody id="players"></tbody></table></div></div>
@@ -28,26 +28,48 @@ const $=id=>document.getElementById(id);
 const norm=s=>(s||'').toString().toLowerCase();
 const teamName=t=>t==='home'?'Astra Phoenix':t==='away'?'Avversario':(t||'');
 function field(g,...keys){for(const k of keys)if(g[k]!==undefined&&g[k]!==null&&g[k]!=='')return g[k];return ''}
+const OWNER='Rickcolo79',REPO='AstraPhoenix_Stats',BRANCH='main';
+const COMPETITION='UISP';
+const API_PATH='uisp/data/partite';
 async function loadData(){
- $('status').textContent='Caricamento archivio...';
+ $('status').textContent='Ricerca automatica dei file JSON...';
  try{
-  const mr=await fetch(BASE+'manifest.json',{cache:'no-store'});
-  if(!mr.ok)throw new Error('Non riesco a leggere data/partite/manifest.json');
-  const manifest=await mr.json(); gameFiles=manifest.games||[];
-  const results=await Promise.all(gameFiles.map(async item=>{
-   const r=await fetch(BASE+item.file,{cache:'no-store'});if(!r.ok)throw new Error('File non trovato: '+item.file);return await r.json();
+  const api=`https://api.github.com/repos/${OWNER}/${REPO}/contents/${API_PATH}?ref=${BRANCH}`;
+  const lr=await fetch(api,{cache:'no-store'});
+  if(!lr.ok)throw new Error('GitHub API non disponibile ('+lr.status+').');
+  const listing=await lr.json();
+  const files=listing.filter(x=>x.type==='file'&&x.name.toLowerCase().endsWith('.json')&&x.name.toLowerCase()!=='manifest.json');
+  const results=await Promise.all(files.map(async item=>{
+    const r=await fetch(item.download_url,{cache:'no-store'});
+    if(!r.ok)throw new Error('Impossibile leggere '+item.name);
+    return {name:item.name,data:await r.json()};
   }));
   allGames=[];allPlayers=[];allEvents=[];
-  results.forEach(p=>{
-   const g=p.game||p.games?.[0]||{};
-   const id=field(g,'id')||field(p,'id')||'';
-   if(id && !field(g,'astra_score') && p.games?.length) {}
-   allGames.push({...g,id,astra_score:field(g,'astra_score')??0,opponent_score:field(g,'opponent_score')??0});
-   (p.players||[]).forEach(x=>allPlayers.push({...x,game_id:x.game_id||id}));
-   (p.events||[]).forEach(x=>allEvents.push({...x,game_id:x.game_id||id}));
-  });
-  fillFilters();render();$('status').textContent=`Caricate ${allGames.length} partite.`;
- }catch(e){$('status').textContent='Errore: '+e.message+'. Verifica che manifest.json e i file partita siano stati caricati su GitHub.'}
+  for(const item of results){
+    const p=item.data;
+    // Supported formats: a single-game export or a full compiler backup.
+    if(Array.isArray(p.games)){
+      const gs=p.games;
+      allGames.push(...gs.filter(g=>(g.competition||p.export_competition||COMPETITION)===COMPETITION));
+      const ids=new Set(gs.map(g=>g.id));
+      allPlayers.push(...(p.players||[]).filter(x=>ids.has(x.game_id)&&((gs.find(g=>g.id===x.game_id)||{}).competition||p.export_competition||COMPETITION)===COMPETITION));
+      allEvents.push(...(p.events||[]).filter(x=>ids.has(x.game_id)&&((gs.find(g=>g.id===x.game_id)||{}).competition||p.export_competition||COMPETITION)===COMPETITION));
+    }else if(p.game){
+      const g=p.game;
+      if((g.competition||p.competition||COMPETITION)===COMPETITION){
+        allGames.push(g);
+        allPlayers.push(...(p.players||[]).map(x=>({...x,game_id:x.game_id||g.id})));
+        allEvents.push(...(p.events||[]).map(x=>({...x,game_id:x.game_id||g.id})));
+      }
+    }
+  }
+  // Deduplicate game/player/event records in case the same backup was uploaded twice.
+  const uniqueGames=new Map();allGames.forEach(g=>uniqueGames.set(g.id,g));allGames=[...uniqueGames.values()];
+  const validIds=new Set(allGames.map(g=>g.id));
+  allPlayers=allPlayers.filter(p=>validIds.has(p.game_id));
+  allEvents=allEvents.filter(e=>validIds.has(e.game_id));
+  fillFilters();render();$('status').textContent=`Caricate ${allGames.length} partite ${COMPETITION}. Lettura automatica dei JSON completata.`;
+ }catch(e){$('status').textContent='Errore nel caricamento: '+e.message+'. Controlla che i JSON siano nella cartella corretta del repository pubblico.'}
 }
 function fillFilters(){
  const oldSeason=$('season').value,oldGame=$('game').value;
