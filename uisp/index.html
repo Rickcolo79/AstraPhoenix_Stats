@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Astra Phoenix Stats — UISP</title>
+<style>
+:root{--black:#17151b;--orange:#f58220;--purple:#633b87;--light:#f4f2f6}
+*{box-sizing:border-box}body{margin:0;background:var(--light);color:#211e25;font:15px/1.45 system-ui,-apple-system,Segoe UI,sans-serif}
+header{background:var(--black);color:white;padding:20px;border-bottom:5px solid var(--orange)}main{max-width:1100px;margin:auto;padding:16px}
+.panel{background:white;padding:16px;border:1px solid #ddd7e3;border-radius:10px;margin-bottom:14px}
+h1{margin:0}h2{margin-top:0}select,input{padding:9px;border:1px solid #ccc;border-radius:6px;margin:4px}
+table{border-collapse:collapse;width:100%;font-size:13px}td,th{padding:8px;border-bottom:1px solid #ddd;text-align:left;white-space:nowrap}th{background:#eee7f4}
+.wrap{overflow:auto}.muted{color:#666;font-size:13px}.filters{display:flex;gap:8px;flex-wrap:wrap}
+.badge{display:inline-block;background:#eee7f4;padding:3px 8px;border-radius:99px;margin-right:6px}
+</style></head>
+<body><header><h1>🏀 Astra Phoenix Basketball Stats — UISP</h1><p>Archivio pubblico · sola consultazione</p></header>
+<main>
+<div class="panel"><h2>Archivio partite</h2><p class="muted">Il sito legge il manifest.json e i singoli file partita presenti nella cartella data/partite/.</p>
+<div class="filters"><select id="season"><option value="">Tutte le stagioni</option></select><select id="game"><option value="">Tutte le partite</option></select><input id="search" placeholder="Cerca avversario"><button id="reload">Aggiorna dati</button></div><p id="status" class="muted">Caricamento...</p></div>
+<div class="panel"><h2>Risultati</h2><div class="wrap"><table><thead><tr><th>Data</th><th>Stagione</th><th>Fase</th><th>Casa/Trasferta</th><th>Avversario</th><th>Risultato Astra</th><th>Risultato avversario</th><th>Stato</th></tr></thead><tbody id="games"></tbody></table></div></div>
+<div class="panel"><h2>Statistiche individuali</h2><div class="wrap"><table><thead><tr><th>Giocatore</th><th>Partite</th><th>PTS</th><th>2PM</th><th>3PM</th><th>FTM</th><th>REB</th><th>AST</th><th>STL</th><th>BLK</th><th>TOV</th><th>PF</th></tr></thead><tbody id="players"></tbody></table></div></div>
+<div class="panel"><h2>Dettaglio partita selezionata</h2><p id="detail" class="muted">Seleziona una partita dal filtro.</p><div class="wrap"><table><thead><tr><th>Giocatore</th><th>Squadra</th><th>Numero</th><th>Eventi registrati</th></tr></thead><tbody id="detailplayers"></tbody></table></div></div>
+</main>
+<script>
+const BASE='data/partite/';
+let allGames=[],allPlayers=[],allEvents=[],gameFiles=[];
+const $=id=>document.getElementById(id);
+const norm=s=>(s||'').toString().toLowerCase();
+const teamName=t=>t==='home'?'Astra Phoenix':t==='away'?'Avversario':(t||'');
+function field(g,...keys){for(const k of keys)if(g[k]!==undefined&&g[k]!==null&&g[k]!=='')return g[k];return ''}
+async function loadData(){
+ $('status').textContent='Caricamento archivio...';
+ try{
+  const mr=await fetch(BASE+'manifest.json',{cache:'no-store'});
+  if(!mr.ok)throw new Error('Non riesco a leggere data/partite/manifest.json');
+  const manifest=await mr.json(); gameFiles=manifest.games||[];
+  const results=await Promise.all(gameFiles.map(async item=>{
+   const r=await fetch(BASE+item.file,{cache:'no-store'});if(!r.ok)throw new Error('File non trovato: '+item.file);return await r.json();
+  }));
+  allGames=[];allPlayers=[];allEvents=[];
+  results.forEach(p=>{
+   const g=p.game||p.games?.[0]||{};
+   const id=field(g,'id')||field(p,'id')||'';
+   if(id && !field(g,'astra_score') && p.games?.length) {}
+   allGames.push({...g,id,astra_score:field(g,'astra_score')??0,opponent_score:field(g,'opponent_score')??0});
+   (p.players||[]).forEach(x=>allPlayers.push({...x,game_id:x.game_id||id}));
+   (p.events||[]).forEach(x=>allEvents.push({...x,game_id:x.game_id||id}));
+  });
+  fillFilters();render();$('status').textContent=`Caricate ${allGames.length} partite.`;
+ }catch(e){$('status').textContent='Errore: '+e.message+'. Verifica che manifest.json e i file partita siano stati caricati su GitHub.'}
+}
+function fillFilters(){
+ const oldSeason=$('season').value,oldGame=$('game').value;
+ const seasons=[...new Set(allGames.map(g=>field(g,'season','stagione')).filter(Boolean))].sort();
+ $('season').innerHTML='<option value="">Tutte le stagioni</option>'+seasons.map(s=>`<option>${esc(s)}</option>`).join('');
+ $('season').value=seasons.includes(oldSeason)?oldSeason:'';
+ $('game').innerHTML='<option value="">Tutte le partite</option>'+allGames.map(g=>`<option value="${esc(g.id)}">${esc(field(g,'date','data'))} · ${esc(field(g,'opponent','avversario'))}</option>`).join('');
+ $('game').value=allGames.some(g=>g.id===oldGame)?oldGame:'';
+}
+function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function eventCount(pid,gid){return allEvents.filter(e=>e.game_id===gid&&e.player_id===pid).length}
+function render(){
+ const season=$('season').value,selected=$('game').value,q=norm($('search').value);
+ const games=allGames.filter(g=>(!season||String(field(g,'season','stagione'))===season)&&(!selected||g.id===selected)&&norm(field(g,'opponent','avversario')).includes(q));
+ $('games').innerHTML=games.map(g=>`<tr><td>${esc(field(g,'date','data'))}</td><td>${esc(field(g,'season','stagione'))}</td><td>${esc(field(g,'phase','fase'))}</td><td>${esc(field(g,'home_away','venue','casa_trasferta'))}</td><td>${esc(field(g,'opponent','avversario'))}</td><td>${esc(field(g,'astra_score')||0)}</td><td>${esc(field(g,'opponent_score')||0)}</td><td>${esc(field(g,'status','stato'))}</td></tr>`).join('');
+ const visibleIds=new Set(games.map(g=>g.id));
+ const sums={};
+ allPlayers.filter(p=>visibleIds.has(p.game_id)).forEach(p=>{
+  const key=p.id||p.player_id||p.name; if(!sums[key])sums[key]={name:field(p,'name','nome'),games:new Set(),pts:0,twom:0,threem:0,ftm:0,reb:0,ast:0,stl:0,blk:0,tov:0,pf:0};
+  sums[key].games.add(p.game_id);
+ });
+ const aliases={
+  '2PM':['2PM','2pt_made','2p_made','FG2M'],'3PM':['3PM','3pt_made','3p_made','FG3M'],'FTM':['FTM','ft_made','1PM'],
+  'REB':['REB','rebound','rebound_def','rebound_off'],'AST':['AST','assist'],'STL':['STL','steal'],'BLK':['BLK','block'],'TOV':['TOV','turnover'],'PF':['PF','foul_committed']
+ };
+ allEvents.filter(e=>visibleIds.has(e.game_id)).forEach(e=>{
+  const p=allPlayers.find(x=>x.game_id===e.game_id&&x.id===e.player_id);if(!p)return;
+  const key=p.id||p.player_id||p.name,s=sums[key];if(!s)return;
+  const t=String(e.type||'').toUpperCase();
+  if(['2PM','2PT_MADE','2P_MADE','FG2M'].includes(t)){s.twom++;s.pts+=2}
+  if(['3PM','3PT_MADE','3P_MADE','FG3M'].includes(t)){s.threem++;s.pts+=3}
+  if(['FTM','FT_MADE','1PM'].includes(t)){s.ftm++;s.pts++}
+  if(['REB','REBOUND','REBOUND_DEF','REBOUND_OFF'].includes(t))s.reb++;
+  if(['AST','ASSIST'].includes(t))s.ast++;
+  if(['STL','STEAL'].includes(t))s.stl++;
+  if(['BLK','BLOCK'].includes(t))s.blk++;
+  if(['TOV','TURNOVER'].includes(t))s.tov++;
+  if(['PF','FOUL_COMMITTED'].includes(t))s.pf++;
+ });
+ $('players').innerHTML=Object.values(sums).sort((a,b)=>b.pts-a.pts).map(s=>`<tr><td>${esc(s.name)}</td><td>${s.games.size}</td><td>${s.pts}</td><td>${s.twom}</td><td>${s.threem}</td><td>${s.ftm}</td><td>${s.reb}</td><td>${s.ast}</td><td>${s.stl}</td><td>${s.blk}</td><td>${s.tov}</td><td>${s.pf}</td></tr>`).join('');
+ const g=allGames.find(x=>x.id===selected);
+ $('detail').textContent=g?`${field(g,'date','data')} · ${field(g,'opponent','avversario')} · ${field(g,'astra_score')||0}-${field(g,'opponent_score')||0}`:'Seleziona una partita dal filtro.';
+ const ps=selected?allPlayers.filter(p=>p.game_id===selected):[];
+ $('detailplayers').innerHTML=ps.map(p=>`<tr><td>${esc(field(p,'name','nome'))}</td><td>${esc(teamName(p.team))}</td><td>${esc(field(p,'number','numero'))}</td><td>${eventCount(p.id,selected)}</td></tr>`).join('');
+}
+$('season').onchange=render;$('game').onchange=render;$('search').oninput=render;$('reload').onclick=loadData;loadData();
+</script></body></html>

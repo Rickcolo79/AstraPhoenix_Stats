@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Astra Phoenix Basketball Stats</title>
+<style>
+:root{--black:#17151b;--orange:#f58220;--purple:#633b87;--light:#f4f2f6;--white:#fff;--muted:#6c6872;--border:#ddd7e3;--green:#2e7d32;--red:#b3261e}
+*{box-sizing:border-box}body{margin:0;background:var(--light);color:#211e25;font:15px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+header{background:var(--black);color:#fff;padding:18px max(16px,calc((100% - 1200px)/2));border-bottom:5px solid var(--orange)}
+header h1{font-size:clamp(21px,4vw,30px);margin:0}header p{margin:3px 0 0;color:#ddd}
+main{max-width:1200px;margin:auto;padding:16px}
+nav{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 16px}
+button,.btn{border:0;border-radius:8px;padding:10px 13px;background:var(--purple);color:white;font-weight:650;cursor:pointer;font-size:14px}
+button:hover,.btn:hover{filter:brightness(1.08)}button.secondary{background:#e8e2ed;color:#28222f}button.orange{background:var(--orange);color:#211e25}button.danger{background:var(--red)}button:disabled{opacity:.35;cursor:not-allowed}
+nav button{background:#e2dce8;color:#2a2430}nav button.active{background:var(--orange);color:#211e25}
+.panel{background:white;border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:14px;box-shadow:0 2px 8px #22152a08}
+h2{font-size:21px;margin:0 0 12px}h3{font-size:17px;margin:14px 0 8px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}
+label{display:block;font-size:13px;font-weight:700;margin:0 0 4px;color:#4b4551}
+input,select,textarea{width:100%;padding:10px;border:1px solid #cfc7d5;border-radius:7px;font:inherit;background:#fff;color:#211e25}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.row>*{flex:0 0 auto}.row .grow{flex:1 1 200px}
+.muted{color:var(--muted);font-size:13px}.notice{background:#fff4e8;border-left:4px solid var(--orange);padding:10px 12px;border-radius:5px;margin:10px 0}
+.success{background:#eaf5eb;border-left:4px solid var(--green);padding:10px 12px;border-radius:5px;margin:10px 0}
+table{border-collapse:collapse;width:100%;font-size:13px}th,td{border-bottom:1px solid #e7e1eb;text-align:left;padding:8px;white-space:nowrap}th{background:#f2edf5;position:sticky;top:0} .tablewrap{overflow:auto;max-height:520px;border:1px solid #e7e1eb;border-radius:8px}
+.pill{display:inline-block;padding:3px 8px;border-radius:999px;background:#eee7f4;font-size:12px;font-weight:700}
+.score{font-size:30px;font-weight:800;text-align:center}.score small{font-size:13px;color:var(--muted);display:block}
+.hidden{display:none!important}.playergrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:7px}.playerbtn{background:#f2edf5;color:#211e25;border:1px solid #d7cddd;text-align:left;min-height:58px}.playerbtn .num{font-size:12px;color:var(--muted)}.playerbtn.selected{outline:3px solid var(--orange)}.playerbtn.oncourt{border-color:var(--green);background:#eaf5eb}
+.eventgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(115px,1fr));gap:7px}.eventgrid button{min-height:44px}.subgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.playerbtn{font-size:15px;min-height:70px;padding:12px;border-radius:11px;box-shadow:0 1px 3px #22152a0a}.playerbtn.selected{outline:3px solid var(--orange);background:#fff0df}.playerbtn.oncourt:after{content:"● IN CAMPO";display:block;font-size:10px;font-weight:800;color:var(--green);margin-top:4px}.eventgrid button{min-height:58px;font-size:15px;border-radius:11px}.eventgrid button.orange{box-shadow:inset 0 -3px #d96b0b}.score{position:sticky;top:0;z-index:5;background:#fff;border:1px solid var(--border);border-radius:12px;padding:8px;margin:10px 0;box-shadow:0 3px 12px #17151b10}.success{background:#edf8ef;border-left:4px solid var(--green);padding:12px;border-radius:7px;margin:10px 0}.playergrid{grid-template-columns:repeat(auto-fill,minmax(125px,1fr))}#quick-actions h3{margin-top:18px}#quick-actions .row{margin-bottom:8px}@media(max-width:600px){.playergrid{grid-template-columns:repeat(2,minmax(0,1fr))}.eventgrid{grid-template-columns:repeat(2,minmax(0,1fr))}.eventgrid button{min-height:58px;padding:9px 6px;font-size:14px}.score{font-size:28px}}
+footer{max-width:1200px;margin:auto;padding:10px 16px 25px;color:var(--muted);font-size:12px}
+@media(max-width:600px){main{padding:10px}.panel{padding:12px}th,td{padding:6px;font-size:12px}.subgrid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header><h1>🏀 Astra Phoenix Basketball Stats</h1><p>Registra la partita in pochi tocchi · archivio · statistiche · tiro per zona</p></header>
+<main>
+<nav id="nav">
+<button class="active" data-page="games">Partite</button><button data-page="entry">Compilazione</button><button data-page="stats">Statistiche</button><button data-page="archive">Archivio e backup</button><button data-page="help">Guida</button>
+</nav>
+<section id="page-games">
+<div class="panel"><h2>Crea una partita</h2><div class="grid">
+<div><label>Data</label><input id="g-date" type="date"></div>
+<div><label>Competizione</label><select id="g-comp"><option>UISP</option><option>FIP</option></select></div>
+<div><label>Stagione</label><input id="g-season" placeholder="2026/27"></div>
+<div><label>Fase</label><select id="g-phase"><option>Stagione regolare</option><option>Gironi</option><option>Playoff</option><option>Playout</option><option>Coppa</option><option>Amichevole</option><option>Altro</option></select></div>
+<div><label>Casa / ospite</label><select id="g-venue"><option value="home">Astra Phoenix in casa</option><option value="away">Astra Phoenix in trasferta</option></select></div>
+<div><label>Avversario</label><input id="g-opponent" placeholder="Nome squadra"></div>
+<div><label>Stato iniziale</label><select id="g-status"><option>Bozza</option><option>Da verificare</option></select></div>
+</div><p><button class="orange" id="create-game">Crea partita</button></p><div class="muted">Ogni partita ha un ID univoco. Il salvataggio avviene in questo browser; esporta regolarmente il backup.</div></div>
+<div class="panel"><h2>Archivio partite</h2><div class="tablewrap"><table><thead><tr><th>Data</th><th>Competizione</th><th>Stagione</th><th>Fase</th><th>Avversario</th><th>Casa/trasferta</th><th>Risultato</th><th>Stato</th><th>Azioni</th></tr></thead><tbody id="games-table"></tbody></table></div></div>
+</section>
+<section id="page-entry" class="hidden">
+<div class="panel"><h2>Partita selezionata</h2><div class="grid">
+<div><label>Partita</label><select id="entry-game"></select></div>
+<div><label>Periodo</label><select id="period"><option value="1">Q1</option><option value="2">Q2</option><option value="3">Q3</option><option value="4">Q4</option><option value="5">OT1</option><option value="6">OT2</option><option value="7">OT3</option></select></div>
+<div><label>Tempo residuo (mm:ss)</label><input id="clock" value="10:00" placeholder="10:00"></div>
+<div><label>Giocatore selezionato</label><input id="selected-player-label" readonly value="Nessuno"></div>
+</div>
+<div class="row" style="margin-top:10px"><button id="timer-start">Avvia cronometro</button><button id="timer-pause" class="secondary">Pausa</button><button id="period-end" class="secondary">Fine periodo</button><span id="timer-state" class="pill">In pausa</span></div>
+<div class="score"><span id="score-for">0</span> – <span id="score-against">0</span><small>Astra Phoenix · Avversario</small></div>
+<div class="success"><b>Flusso rapido:</b> 1. scegli un giocatore qui sotto · 2. tocca l’azione · 3. per i tiri da 2/3, scegli la zona. Il punteggio si aggiorna da solo. <span class="muted">Il cronometro dell’app è solo di supporto.</span></div>
+</div>
+<div class="panel"><h2>1 · Tocca il giocatore</h2><p class="muted">Verde = in campo. Bordo arancione = selezionato. Tocca un giocatore per selezionarlo: la squadra viene scelta automaticamente.</p><div class="grid">
+<div><h3>Astra Phoenix</h3><label>Aggiungi giocatore (numero e nome)</label><div class="row"><input id="new-home-num" style="max-width:75px" placeholder="N°"><input id="new-home-name" class="grow" placeholder="Nome giocatore"><button id="add-home">Aggiungi</button></div><p class="muted">Aggiungi la rosa una volta. Poi, durante la partita, basta toccare il giocatore.</p><div id="home-players" class="playergrid"></div></div>
+<div><h3>Avversari</h3><label>Aggiungi giocatore (numero e nome)</label><div class="row"><input id="new-away-num" style="max-width:75px" placeholder="N°"><input id="new-away-name" class="grow" placeholder="Nome giocatore"><button id="add-away">Aggiungi</button></div><p class="muted">Tocca un giocatore avversario per passare automaticamente alla sua squadra.</p><div id="away-players" class="playergrid"></div></div>
+</div>
+<div class="row" style="margin-top:12px"><button id="toggle-court" class="secondary">Dentro/Fuori: cambia stato in campo</button><button id="set-starters" class="secondary">Imposta titolare / aggiungi in campo</button><button id="substitution" class="secondary">Sostituzione</button></div>
+<div id="substitution-box" class="hidden" style="margin-top:12px"><div class="subgrid"><div><label>Esce (solo in campo)</label><select id="sub-out"></select></div><div><label>Entra (solo panchina)</label><select id="sub-in"></select></div></div><p><button id="do-sub">Conferma sostituzione</button><button id="close-sub" class="secondary">Chiudi</button></p></div>
+</div>
+<div class="panel" id="quick-actions"><h2>2 · Tocca l’azione</h2><p class="muted">Dopo aver selezionato il giocatore, scegli qui cosa è successo. I canestri aggiornano subito il punteggio.</p><div class="row"><label style="margin:0">Sto registrando per:</label><select id="event-team"><option value="home">Astra Phoenix</option><option value="away">Avversari</option></select><span class="pill" id="team-hint">Seleziona un giocatore in campo</span></div>
+<h3>🏀 Tiri e punti</h3><div class="eventgrid" id="shoot-events">
+<button data-event="2PM" class="orange">Canestro da 2</button><button data-event="2PA">Tiro da 2 sbagliato</button><button data-event="3PM" class="orange">Canestro da 3</button><button data-event="3PA">Tiro da 3 sbagliato</button><button data-event="FTM" class="orange">Libero segnato</button><button data-event="FTA">Libero sbagliato</button>
+</div><h3>📋 Altre azioni</h3><div class="eventgrid" id="other-events">
+<button data-event="AST">Assist</button><button data-event="OREB">Rimbalzo offensivo</button><button data-event="DREB">Rimbalzo difensivo</button><button data-event="TOV">Palla persa</button><button data-event="STL">Recupero</button><button data-event="BLK">Stoppata</button><button data-event="FOUL">Fallo commesso</button><button data-event="FOUL_DRAWN">Fallo subito</button><button data-event="TECH">Tecnico</button><button data-event="UNSPORT">Antisportivo</button>
+</div>
+<div id="shotbox" class="hidden"><h3>Zona del tiro</h3><p id="shot-zone-instruction" class="muted">Scegli la zona che descrive il tiro.</p><div class="notice">Seleziona una delle zone qui sotto. Le zone da 2 e da 3 sono separate: vengono mostrate solo quelle compatibili con il tiro scelto.</div><div class="eventgrid" id="zones"></div><p><button id="cancel-shot" type="button" class="secondary">Annulla selezione zona</button></p></div>
+<p id="entry-message" class="muted">Nessun evento registrato in questa sessione.</p>
+</div>
+<div class="panel"><h2>Ultime azioni registrate</h2><p class="muted">Hai sbagliato? Premi «Annulla» sulla riga dell’evento. Il punteggio verrà ricalcolato.</p><div class="tablewrap"><table><thead><tr><th>Periodo</th><th>Tempo</th><th>Squadra</th><th>Giocatore</th><th>Evento</th><th>Zona</th><th>Azioni</th></tr></thead><tbody id="events-table"></tbody></table></div></div>
+</section>
+<section id="page-stats" class="hidden">
+<div class="panel"><h2>Consultazione statistiche</h2><div class="grid">
+<div><label>Competizione</label><select id="f-comp"><option value="">Tutte</option><option>UISP</option><option>FIP</option></select></div>
+<div><label>Stagione</label><select id="f-season"><option value="">Tutte</option></select></div>
+<div><label>Fase</label><select id="f-phase"><option value="">Tutte</option><option>Stagione regolare</option><option>Gironi</option><option>Playoff</option><option>Playout</option><option>Coppa</option><option>Amichevole</option><option>Altro</option></select></div>
+<div><label>Squadra</label><select id="f-team"><option value="home">Solo Astra Phoenix</option><option value="away">Solo avversari</option></select></div>
+</div><p class="muted">Le statistiche degli avversari sono separate da quelle di Astra Phoenix. Le percentuali e le statistiche avanzate sono calcolate esclusivamente sugli eventi importati o registrati.</p><div class="tablewrap"><table><thead id="stats-head"></thead><tbody id="stats-body"></tbody></table></div></div>
+<div class="panel"><h2>Shot chart</h2><div class="grid"><div><label>Squadra</label><select id="shot-team"><option value="home">Astra Phoenix</option><option value="away">Avversari</option></select></div><div><label>Giocatore</label><select id="shot-player"><option value="">Tutti</option></select></div><div><label>Tipo tiro</label><select id="shot-type"><option value="">Tutti i tiri dal campo</option><option value="2">Solo da 2</option><option value="3">Solo da 3</option></select></div></div><div id="shot-summary" class="muted"></div><div class="tablewrap"><table><thead><tr><th>Zona</th><th>Canestri</th><th>Tentativi</th><th>%</th></tr></thead><tbody id="shot-body"></tbody></table></div></div>
+</section>
+<section id="page-archive" class="hidden">
+<div class="panel"><h2>Esporta e importa dati</h2><p>Usa il backup JSON per conservare l'intero archivio con roster, partite ed eventi. I CSV consentono di scambiare i dati e importarli in fogli di calcolo.</p>
+<div class="row"><button id="export-json" class="orange">Backup JSON completo · UISP + FIP</button><button id="export-json-uisp">Backup JSON completo · solo UISP</button><button id="export-json-fip">Backup JSON completo · solo FIP</button><button id="export-csv">Esporta eventi CSV</button><button id="export-games">Esporta partite CSV</button></div><p class="muted">I backup UISP e FIP sono archivi completi separati: includono partite, giocatori ed eventi della sola competizione scelta. Il backup generale contiene entrambe.</p>
+<h3>Importa backup completo</h3><input type="file" id="import-json" accept=".json,application/json"><p class="muted">L'importazione di un backup sostituisce l'archivio corrente in questo browser. Fai prima un backup dei dati presenti.</p>
+<h3>Importa CSV eventi</h3><input type="file" id="import-csv" accept=".csv,text/csv"><p class="muted">Il CSV eventi esportato da questa app può essere reimportato. Le righe con ID evento già presenti vengono ignorate.</p>
+<h3>Pubblicazione statistiche (file per il sito)</h3><p>Scarica un file JSON pubblico con le sole informazioni sportive e un file HTML di consultazione. Per aggiornare il sito pubblico, carica il file generato nel tuo repository/hosting statico seguendo la guida inclusa nel pacchetto.</p><button id="export-game-json" class="orange">Esporta JSON della partita selezionata</button> <button id="export-public" class="orange">Genera dati pubblici JSON</button><div id="archive-message" class="muted"></div>
+</div>
+</section>
+<section id="page-help" class="hidden">
+<div class="panel"><h2>Guida rapida</h2>
+<ol>
+<li>Crea una partita nella sezione <b>Partite</b>, poi apri <b>Compilazione</b>.</li>
+<li>Aggiungi i giocatori di entrambe le squadre. Seleziona i cinque titolari Astra Phoenix e premi «Imposta quintetto iniziale». Ripeti la selezione/cambio di stato per gli avversari: la gestione è separata.</li>
+<li>Durante la compilazione: tocca direttamente il giocatore, poi l’azione. La squadra viene selezionata automaticamente. Per un tiro da 2 o 3 scegli la zona; per i liberi no.</li>
+<li>Per una sostituzione, seleziona chi esce e chi entra. Il cambio registra anche il tempo corrente come riferimento.</li>
+<li>Esporta spesso il backup JSON. Il CSV è utile per trasferimento e analisi, ma il JSON conserva l'intero archivio per ripristinarlo.</li>
+<li>Per pubblicare le statistiche, genera i dati pubblici JSON e aggiorna il sito statico. Il link pubblico rimane lo stesso se sostituisci i file sullo stesso sito. I backup completi UISP/FIP sono invece file privati di archivio e non vanno caricati sul sito pubblico.</li>
+</ol>
+<div class="notice"><b>Limiti da conoscere:</b> questa è un'app locale, non un sistema multiutente sincronizzato. I dati rimangono nel browser e nel dispositivo finché non esporti il backup. Il timer del browser non sostituisce il cronometro ufficiale. Plus/minus e alcune metriche avanzate richiedono una registrazione coerente di ogni evento di punteggio, quintetto e minuti: controlla i risultati prima di considerarli ufficiali.</div>
+<p>Per il sito pubblico, non pubblicare informazioni personali non necessarie. Pubblica solo i dati sportivi che vuoi rendere accessibili a tutti.</p>
+</div>
+</section>
+</main><footer>Astra Phoenix Basketball Stats · Archivio locale. Effettua backup regolari e verifica le statistiche prima della pubblicazione.</footer>
+<script>
+const STORE='astraPhoenixStats_v1';
+let db=loadDB(), currentGameId=null, selected={home:null,away:null}, pendingShot=null, timerInterval=null, timerRunning=false, timerSeconds=600, timerLast=null;
+function uid(){return 'g_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,8)}
+function loadDB(){try{return JSON.parse(localStorage.getItem(STORE))||{version:1,games:[],players:[],events:[]}}catch(e){return {version:1,games:[],players:[],events:[]}}}
+function saveDB(){localStorage.setItem(STORE,JSON.stringify(db));renderAll()}
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function dl(name,content,type='text/plain;charset=utf-8'){let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([content],{type}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+function csv(rows){return rows.map(r=>r.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(',')).join('\r\n')}
+function parseCSV(t){let rows=[],row=[],s='',q=false;for(let i=0;i<t.length;i++){let c=t[i];if(q){if(c=='"'&&t[i+1]=='"'){s+='"';i++}else if(c=='"')q=false;else s+=c}else{if(c=='"')q=true;else if(c==','){row.push(s);s=''}else if(c=='\n'){row.push(s.replace(/\r$/,''));rows.push(row);row=[];s=''}else s+=c}}if(s.length||row.length){row.push(s.replace(/\r$/,''));rows.push(row)}return rows}
+function currentGame(){return db.games.find(g=>g.id===(currentGameId||document.getElementById('entry-game').value))}
+function gameEvents(gid){return db.events.filter(e=>e.game_id===gid)}
+function gamePlayers(gid,team){return db.players.filter(p=>p.game_id===gid&&p.team===team)}
+function score(gid,team){return gameEvents(gid).filter(e=>e.team===team).reduce((s,e)=>s+({ '2PM':2,'3PM':3,'FTM':1}[e.type]||0),0)}
+function labelTeam(t){return t==='home'?'Astra Phoenix':'Avversari'}
+function periodName(p){return p<=4?'Q'+p:'OT'+(p-4)}
+function renderAll(){renderGames();fillEntryGames();renderEntry();renderStatsFilters();renderStats();renderShotChart()}
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('active',x===b));document.querySelectorAll('main section').forEach(s=>s.classList.add('hidden'));document.getElementById('page-'+b.dataset.page).classList.remove('hidden');renderAll()});
+document.getElementById('create-game').onclick=()=>{let opp=document.getElementById('g-opponent').value.trim();if(!opp){alert('Inserisci il nome della squadra avversaria.');return}let g={id:uid(),date:document.getElementById('g-date').value||new Date().toISOString().slice(0,10),competition:document.getElementById('g-comp').value,season:document.getElementById('g-season').value.trim()||'Senza stagione',phase:document.getElementById('g-phase').value,venue:document.getElementById('g-venue').value,opponent:opp,status:document.getElementById('g-status').value,created_at:new Date().toISOString()};db.games.push(g);currentGameId=g.id;document.getElementById('g-opponent').value='';saveDB();document.getElementById('entry-game').value=g.id;switchPage('entry')};
+function switchPage(p){document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('active',x.dataset.page===p));document.querySelectorAll('main section').forEach(s=>s.classList.add('hidden'));document.getElementById('page-'+p).classList.remove('hidden')}
+function renderGames(){let b=document.getElementById('games-table');b.innerHTML=db.games.slice().sort((a,b)=>b.date.localeCompare(a.date)).map(g=>`<tr><td>${esc(g.date)}</td><td>${esc(g.competition)}</td><td>${esc(g.season)}</td><td>${esc(g.phase)}</td><td>${esc(g.opponent)}</td><td>${g.venue==='home'?'Casa':'Trasferta'}</td><td>${score(g.id,'home')}–${score(g.id,'away')}</td><td><select onchange="setStatus('${g.id}',this.value)">${['Bozza','Da verificare','Archiviata','Annullata'].map(s=>`<option ${g.status===s?'selected':''}>${s}</option>`).join('')}</select></td><td><button onclick="openGame('${g.id}')">Apri</button> <button class="danger" onclick="deleteGame('${g.id}')">Elimina</button></td></tr>`).join('')||'<tr><td colspan="9">Nessuna partita creata.</td></tr>'}
+function setStatus(id,s){let g=db.games.find(x=>x.id===id);if(g)g.status=s;saveDB()}
+function openGame(id){currentGameId=id;document.getElementById('entry-game').value=id;switchPage('entry');renderAll()}
+function deleteGame(id){if(!confirm('Eliminare la partita e tutti i suoi eventi e giocatori?'))return;db.games=db.games.filter(g=>g.id!==id);db.players=db.players.filter(p=>p.game_id!==id);db.events=db.events.filter(e=>e.game_id!==id);if(currentGameId===id)currentGameId=null;saveDB()}
+function fillEntryGames(){let sel=document.getElementById('entry-game'),old=sel.value;sel.innerHTML=db.games.map(g=>`<option value="${g.id}">${esc(g.date)} · ${esc(g.opponent)} (${esc(g.competition)})</option>`).join('');if(db.games.length){sel.value=db.games.some(g=>g.id===old)?old:(db.games.some(g=>g.id===currentGameId)?currentGameId:db.games[db.games.length-1].id);currentGameId=sel.value}else sel.innerHTML='<option value="">Crea prima una partita</option>'}
+document.getElementById('entry-game').onchange=e=>{currentGameId=e.target.value;selected={home:null,away:null};renderEntry()}
+function addPlayer(team){let g=currentGame();if(!g){alert('Crea o seleziona una partita.');return}let num=document.getElementById('new-'+team+'-num').value.trim(),name=document.getElementById('new-'+team+'-name').value.trim();if(!name){alert('Inserisci il nome del giocatore.');return}if(gamePlayers(g.id,team).some(p=>p.number===num&&p.number!=='')){alert('Numero già utilizzato in questa squadra per la partita.');return}db.players.push({id:uid(),game_id:g.id,team,number:num,name,on_court:false,starter:false});document.getElementById('new-'+team+'-num').value='';document.getElementById('new-'+team+'-name').value='';saveDB()}
+document.getElementById('add-home').onclick=()=>addPlayer('home');document.getElementById('add-away').onclick=()=>addPlayer('away');
+function renderEntry(){let g=currentGame();if(!g){['home-players','away-players','events-table'].forEach(id=>document.getElementById(id).innerHTML='');document.getElementById('score-for').textContent='0';document.getElementById('score-against').textContent='0';return}
+['home','away'].forEach(t=>{let ps=gamePlayers(g.id,t);document.getElementById(t+'-players').innerHTML=ps.map(p=>`<button class="playerbtn ${selected[t]===p.id?'selected':''} ${p.on_court?'oncourt':''}" onclick="selectPlayer('${t}','${p.id}')"><b>${esc(p.name)}</b><br><span class="num">#${esc(p.number||'—')} · ${p.on_court?'IN CAMPO':'PANCHINA'}</span></button>`).join('')||'<span class="muted">Nessun giocatore.</span>'});
+document.getElementById('score-for').textContent=score(g.id,'home');document.getElementById('score-against').textContent=score(g.id,'away');
+document.getElementById('events-table').innerHTML=gameEvents(g.id).slice().reverse().map(e=>{let p=db.players.find(p=>p.id===e.player_id);return `<tr><td>${periodName(e.period)}</td><td>${esc(e.clock)}</td><td>${labelTeam(e.team)}</td><td>${p?esc(p.name):'—'}</td><td>${esc(e.type)}</td><td>${e.zone||'—'}</td><td><button class="danger" onclick="deleteEvent('${e.id}')">Annulla</button></td></tr>`}).join('')||'<tr><td colspan="7">Nessun evento.</td></tr>';
+document.getElementById('selected-player-label').value=['home','away'].map(t=>{let p=db.players.find(p=>p.id===selected[t]);return p?p.name:null}).filter(Boolean).join(' / ')||'Nessuno';
+let et=document.getElementById('event-team').value,ep=db.players.find(p=>p.id===selected[et]);document.getElementById('team-hint').textContent=ep?(ep.name+(ep.on_court?' · in campo':' · in panchina')):'Seleziona un giocatore in campo';
+refreshSubSelects();document.getElementById('entry-message').textContent=`${gameEvents(g.id).length} eventi registrati · ${g.opponent} · ${g.competition}`;
+}
+function selectPlayer(t,id){selected[t]=id;document.getElementById('event-team').value=t;renderEntry()}
+function deleteEvent(id){if(!confirm('Annullare questo evento?'))return;db.events=db.events.filter(e=>e.id!==id);saveDB()}
+document.getElementById('toggle-court').onclick=()=>{let g=currentGame();if(!g)return;let t=document.getElementById('event-team').value,p=db.players.find(p=>p.id===selected[t]);if(!p){alert('Seleziona prima un giocatore della squadra scelta.');return}p.on_court=!p.on_court;if(p.on_court&&gamePlayers(g.id,t).filter(x=>x.on_court).length>5){p.on_court=false;alert('Massimo cinque giocatori in campo.');return}saveDB()};
+document.getElementById('set-starters').onclick=()=>{let g=currentGame();if(!g)return;let t=document.getElementById('event-team').value;let p=db.players.find(p=>p.id===selected[t]);if(!p){alert('Seleziona un giocatore.');return}if(!p.on_court){let inCourt=gamePlayers(g.id,t).filter(x=>x.on_court);if(inCourt.length>=5){alert('Ci sono già cinque giocatori in campo.');return}p.on_court=true}p.starter=true;saveDB()};
+document.getElementById('substitution').onclick=()=>{document.getElementById('substitution-box').classList.toggle('hidden');refreshSubSelects()};
+document.getElementById('close-sub').onclick=()=>document.getElementById('substitution-box').classList.add('hidden');
+function refreshSubSelects(){let g=currentGame();if(!g)return;let t=document.getElementById('event-team').value;let on=gamePlayers(g.id,t).filter(p=>p.on_court),off=gamePlayers(g.id,t).filter(p=>!p.on_court);document.getElementById('sub-out').innerHTML=on.map(p=>`<option value="${p.id}">${esc(p.number)} ${esc(p.name)}</option>`).join('');document.getElementById('sub-in').innerHTML=off.map(p=>`<option value="${p.id}">${esc(p.number)} ${esc(p.name)}</option>`).join('')}
+document.getElementById('event-team').onchange=()=>{renderEntry();refreshSubSelects()};
+document.getElementById('do-sub').onclick=()=>{let g=currentGame(),t=document.getElementById('event-team').value,out=db.players.find(p=>p.id===document.getElementById('sub-out').value),inn=db.players.find(p=>p.id===document.getElementById('sub-in').value);if(!out||!inn){alert('Servono un giocatore in campo e uno in panchina.');return}out.on_court=false;inn.on_court=true;db.events.push({id:uid(),game_id:g.id,team:t,player_id:out.id,type:'SUB_OUT',period:+document.getElementById('period').value,clock:document.getElementById('clock').value,zone:'',created_at:new Date().toISOString(),related_player_id:inn.id});db.events.push({id:uid(),game_id:g.id,team:t,player_id:inn.id,type:'SUB_IN',period:+document.getElementById('period').value,clock:document.getElementById('clock').value,zone:'',created_at:new Date().toISOString(),related_player_id:out.id});saveDB()};
+function logEvent(type,zone=''){if(!type||!['2PM','2PA','3PM','3PA','FTM','FTA','AST','OREB','DREB','TOV','STL','BLK','FOUL','FOUL_DRAWN','TECH','UNSPORT'].includes(type)){alert('Evento non valido: seleziona nuovamente il tipo di evento.');return}let g=currentGame();if(!g){alert('Crea una partita prima.');return}let t=document.getElementById('event-team').value,p=db.players.find(p=>p.id===selected[t]);if(!p){alert('Seleziona un giocatore della squadra evento.');return}if(!p.on_court){alert('Per registrare eventi individuali, il giocatore deve essere in campo.');return}if(['2PM','2PA','3PM','3PA'].includes(type)&&!zone){pendingShot=type;renderZoneButtons();document.getElementById('shotbox').classList.remove('hidden');return}
+db.events.push({id:uid(),game_id:g.id,team:t,player_id:p.id,type,period:+document.getElementById('period').value,clock:document.getElementById('clock').value,zone,created_at:new Date().toISOString()});pendingShot=null;document.getElementById('shotbox').classList.add('hidden');saveDB()}
+document.querySelectorAll('[data-event]').forEach(b=>b.onclick=()=>logEvent(b.dataset.event));
+const zoneDefs=[
+ {id:'AREA',label:'Area',points:2,group:'2'},
+ {id:'MID_LOW_L',label:'Midrange basso sx',points:2,group:'2'},
+ {id:'MID_HIGH_L',label:'Midrange alto sx',points:2,group:'2'},
+ {id:'MID_CENTRE',label:'Midrange centro',points:2,group:'2'},
+ {id:'MID_HIGH_R',label:'Midrange alto dx',points:2,group:'2'},
+ {id:'MID_LOW_R',label:'Midrange basso dx',points:2,group:'2'},
+ {id:'3_CORNER_L',label:'3 punti angolo sx',points:3,group:'3'},
+ {id:'3_WING_L',label:'3 punti alto sx',points:3,group:'3'},
+ {id:'3_TOP',label:'3 punti centrale',points:3,group:'3'},
+ {id:'3_WING_R',label:'3 punti alto dx',points:3,group:'3'},
+ {id:'3_CORNER_R',label:'3 punti angolo dx',points:3,group:'3'}
+];
+const zoneNames=zoneDefs.map(z=>z.label);
+function renderZoneButtons(){
+ const box=document.getElementById('zones');
+ const group=String(pendingShot||'').startsWith('3')?'3':'2';
+ document.getElementById('shot-zone-instruction').textContent=group==='3'?'Tiro da 3 selezionato: scegli una delle 5 zone da tre punti.':'Tiro da 2 selezionato: scegli Area o una delle 5 zone midrange.';
+ box.innerHTML=zoneDefs.filter(z=>z.group===group).map(z=>`<button class="secondary" type="button" data-zone="${z.id}">${z.label}<br><small>${z.points} punti</small></button>`).join('');
+ box.querySelectorAll('[data-zone]').forEach(b=>b.onclick=()=>logEvent(pendingShot,b.dataset.zone));
+}
+document.getElementById('cancel-shot').onclick=()=>{pendingShot=null;document.getElementById('shotbox').classList.add('hidden')};
+document.getElementById('period').onchange=()=>{let p=+document.getElementById('period').value;timerSeconds=p<=4?600:300;document.getElementById('clock').value=formatTime(timerSeconds);stopTimer()};
+function formatTime(s){s=Math.max(0,Math.floor(s));return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')}
+function stopTimer(){timerRunning=false;if(timerInterval)clearInterval(timerInterval);timerInterval=null;document.getElementById('timer-state').textContent='In pausa'}
+document.getElementById('timer-start').onclick=()=>{if(timerRunning)return;let m=/^(\d{1,2}):([0-5]\d)$/.exec(document.getElementById('clock').value);if(m)timerSeconds=+m[1]*60 + +m[2];timerRunning=true;timerLast=Date.now();document.getElementById('timer-state').textContent='In corso';timerInterval=setInterval(()=>{let now=Date.now();timerSeconds-=Math.max(1,Math.round((now-timerLast)/1000));timerLast=now;document.getElementById('clock').value=formatTime(timerSeconds);if(timerSeconds<=0){timerSeconds=0;document.getElementById('clock').value='00:00';stopTimer();alert('Periodo terminato: verifica il cronometro ufficiale e seleziona il periodo successivo, se necessario.')}},500)};
+document.getElementById('timer-pause').onclick=()=>stopTimer();
+document.getElementById('period-end').onclick=()=>{stopTimer();let p=+document.getElementById('period').value;if(p===4&&score(currentGame()?.id,'home')!==score(currentGame()?.id,'away'))alert('Fine Q4: partita conclusa. Se il punteggio è pari, seleziona OT1.');else if(p===4)alert('Punteggio pari: seleziona OT1 per il supplementare.');else alert('Periodo terminato. Seleziona il periodo successivo.');};
+function renderStatsFilters(){let ss=[...new Set(db.games.map(g=>g.season))];let s=document.getElementById('f-season'),old=s.value;s.innerHTML='<option value="">Tutte</option>'+ss.map(v=>`<option>${esc(v)}</option>`).join('');s.value=ss.includes(old)?old:'';let shot=document.getElementById('shot-player'),t=document.getElementById('shot-team').value,oldp=shot.value,gids=db.games.map(g=>g.id);shot.innerHTML='<option value="">Tutti</option>'+db.players.filter(p=>p.team===t&&gids.includes(p.game_id)).map(p=>`<option value="${p.id}">${esc(p.name)} (#${esc(p.number)})</option>`).join('');shot.value=oldp}
+function filteredGames(){return db.games.filter(g=>(!document.getElementById('f-comp').value||g.competition===document.getElementById('f-comp').value)&&(!document.getElementById('f-season').value||g.season===document.getElementById('f-season').value)&&(!document.getElementById('f-phase').value||g.phase===document.getElementById('f-phase').value))}
+function renderStats(){let gs=filteredGames(),ids=new Set(gs.map(g=>g.id)),team=document.getElementById('f-team').value;let ev=db.events.filter(e=>ids.has(e.game_id)&&e.team===team);let pids=[...new Set(ev.map(e=>e.player_id))];let metrics=['Partite','Giocatore','MIN*','PTS','2P','2PA','2P%','3P','3PA','3P%','FT','FTA','FT%','FG%','eFG%','TS%','AST','OREB','DREB','REB','TOV','STL','BLK','Falli','Punti/36','AST/TOV'];document.getElementById('stats-head').innerHTML='<tr>'+metrics.map(m=>`<th>${m}</th>`).join('')+'</tr>';let rows=pids.map(pid=>{let p=db.players.find(p=>p.id===pid),pe=ev.filter(e=>e.player_id===pid),countTypes=t=>pe.filter(e=>e.type===t).length,pm=countTypes('2PM'),pa=pm+countTypes('2PA'),tm=countTypes('3PM'),ta=tm+countTypes('3PA'),fm=countTypes('FTM'),fa=fm+countTypes('FTA'),pts=2*pm+3*tm+fm,reb=countTypes('OREB')+countTypes('DREB'),ast=countTypes('AST'),tov=countTypes('TOV'),fga=pa+ta,fta=fa,minutes=0;return [new Set(pe.map(e=>e.game_id)).size,p?.name||'—','N/D',pts,`${pm}`,pa,pa?`${(100*pm/pa).toFixed(1)}%`:'N/D',tm,ta,ta?`${(100*tm/ta).toFixed(1)}%`:'N/D',fm,fa,fa?`${(100*fm/fa).toFixed(1)}%`:'N/D',fga?`${(100*(pm+tm)/fga).toFixed(1)}%`:'N/D',fga?`${(100*(pm+1.5*tm)/fga).toFixed(1)}%`:'N/D',(fga+0.44*fta)?`${(100*pts/(2*(fga+0.44*fta))).toFixed(1)}%`:'N/D',ast,countTypes('OREB'),countTypes('DREB'),reb,tov,countTypes('STL'),countTypes('BLK'),countTypes('FOUL'), 'N/D',tov?`${(ast/tov).toFixed(2)}`:'N/D'];return {name:p?.name||'—',vals:rows}}).sort((a,b)=>String(a.name).localeCompare(String(b.name)));document.getElementById('stats-body').innerHTML=rows.map(r=>'<tr>'+r.vals.map(v=>`<td>${esc(v)}</td>`).join('')+'</tr>').join('')||'<tr><td colspan="'+metrics.length+'">Nessun dato per i filtri selezionati.</td></tr>'}
+['f-comp','f-season','f-phase','f-team'].forEach(id=>document.getElementById(id).onchange=()=>renderStats());
+['shot-team','shot-player','shot-type'].forEach(id=>document.getElementById(id).onchange=()=>{renderStatsFilters();renderShotChart()});
+function renderShotChart(){let t=document.getElementById('shot-team').value,pid=document.getElementById('shot-player').value,type=document.getElementById('shot-type').value;let ev=db.events.filter(e=>e.team===t&&(!pid||e.player_id===pid)&&(['2PM','2PA','3PM','3PA'].includes(e.type))&&(!type||(type==='2'?e.type.startsWith('2'):e.type.startsWith('3'))));let body=document.getElementById('shot-body');body.innerHTML=zoneDefs.filter(z=>!type||z.group===type).map(z=>{let a=ev.filter(e=>e.zone===z.id),m=a.filter(e=>e.type.endsWith('M')).length;return `<tr><td>${z.label} (${z.points} punti)</td><td>${m}</td><td>${a.length}</td><td>${a.length?(100*m/a.length).toFixed(1)+'%':'N/D'}</td></tr>`}).join('');let m=ev.filter(e=>e.type.endsWith('M')).length;document.getElementById('shot-summary').textContent=`${labelTeam(t)} · ${m}/${ev.length} canestri/tentativi · ${ev.length?(100*m/ev.length).toFixed(1):'N/D'}%`; }
+function exportEvents(){let rows=[['event_id','game_id','date','competition','season','phase','opponent','venue','team','player_id','player_name','player_number','event_type','period','clock','zone','related_player_id','created_at']];db.events.forEach(e=>{let g=db.games.find(g=>g.id===e.game_id),p=db.players.find(p=>p.id===e.player_id);rows.push([e.id,e.game_id,g?.date,g?.competition,g?.season,g?.phase,g?.opponent,g?.venue,e.team,e.player_id,p?.name,p?.number,e.type,e.period,e.clock,e.zone,e.related_player_id,e.created_at])});dl('astra_events.csv','\ufeff'+csv(rows),'text/csv;charset=utf-8')}
+function exportGames(){let rows=[['game_id','date','competition','season','phase','opponent','venue','status','astra_score','opponent_score']];db.games.forEach(g=>rows.push([g.id,g.date,g.competition,g.season,g.phase,g.opponent,g.venue,g.status,score(g.id,'home'),score(g.id,'away')]));dl('astra_games.csv','\ufeff'+csv(rows),'text/csv;charset=utf-8')}
+function exportBackup(competition=null){
+ const games=db.games.filter(g=>!competition||g.competition===competition);
+ const ids=new Set(games.map(g=>g.id));
+ const backup={...db, games, players:db.players.filter(p=>ids.has(p.game_id)), events:db.events.filter(e=>ids.has(e.game_id)), exported_at:new Date().toISOString(), export_competition:competition||'Tutte'};
+ const suffix=competition?'_'+competition.toLowerCase():'_completo';
+ dl('astra_backup'+suffix+'_'+new Date().toISOString().slice(0,10)+'.json',JSON.stringify(backup,null,2),'application/json');
+ document.getElementById('archive-message').textContent=competition?`Backup completo ${competition} scaricato (${games.length} partite).`:`Backup completo UISP + FIP scaricato (${games.length} partite).`;
+}
+document.getElementById('export-json').onclick=()=>exportBackup();
+document.getElementById('export-json-uisp').onclick=()=>exportBackup('UISP');
+document.getElementById('export-json-fip').onclick=()=>exportBackup('FIP');
+document.getElementById('export-csv').onclick=exportEvents;document.getElementById('export-games').onclick=exportGames;
+document.getElementById('import-json').onchange=async e=>{let f=e.target.files[0];if(!f)return;try{let x=JSON.parse(await f.text());if(!Array.isArray(x.games)||!Array.isArray(x.players)||!Array.isArray(x.events))throw Error('Formato non riconosciuto');if(!confirm('Sostituire l’archivio attuale con quello importato? Prima fai un backup.'))return;db=x;currentGameId=null;saveDB();document.getElementById('archive-message').textContent='Backup importato.'}catch(err){alert('Importazione non riuscita: '+err.message)}e.target.value=''};
+document.getElementById('import-csv').onchange=async e=>{let f=e.target.files[0];if(!f)return;try{let rows=parseCSV(await f.text());let h=rows.shift(),ix=Object.fromEntries(h.map((x,i)=>[x,i]));let n=0;for(let r of rows){let id=r[ix.event_id];if(!id||db.events.some(e=>e.id===id))continue;let gid=r[ix.game_id];if(!db.games.some(g=>g.id===gid)){db.games.push({id:gid,date:r[ix.date],competition:r[ix.competition],season:r[ix.season],phase:r[ix.phase],opponent:r[ix.opponent],venue:r[ix.venue]||'home',status:'Da verificare'});}let pid=r[ix.player_id];if(pid&&!db.players.some(p=>p.id===pid))db.players.push({id:pid,game_id:gid,team:r[ix.team],number:r[ix.player_number],name:r[ix.player_name],on_court:false,starter:false});db.events.push({id,game_id:gid,team:r[ix.team],player_id:pid,type:r[ix.event_type],period:+r[ix.period],clock:r[ix.clock],zone:r[ix.zone],related_player_id:r[ix.related_player_id]||'',created_at:r[ix.created_at]||new Date().toISOString()});n++}saveDB();document.getElementById('archive-message').textContent=`Importazione completata: ${n} nuovi eventi.`}catch(err){alert('CSV non valido: '+err.message)}e.target.value=''};
+
+document.getElementById('export-game-json').onclick=()=>{
+ const sel=document.getElementById('entry-game');
+ const gameId=sel ? sel.value : '';
+ const g=db.games.find(x=>x.id===gameId);
+ if(!g){alert('Seleziona prima una partita nella sezione Compilazione.');return;}
+ if(g.status==='Annullata'){alert('La partita è annullata: non viene esportata.');return;}
+ const gamePlayers=db.players.filter(p=>p.game_id===g.id).map(p=>({...p}));
+ const gameEvents=db.events.filter(e=>e.game_id===g.id).map(e=>({...e}));
+ const payload={
+   schema_version:1,
+   type:'astra_phoenix_single_game',
+   exported_at:new Date().toISOString(),
+   competition:g.competition || g.competizione || '',
+   game:{...g,astra_score:score(g.id,'home'),opponent_score:score(g.id,'away')},
+   players:gamePlayers,
+   events:gameEvents
+ };
+ const slug=(g.opponent||g.avversario||'avversario').toString().normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'avversario';
+ const date=(g.date||g.data||new Date().toISOString().slice(0,10)).toString().slice(0,10);
+ const comp=(payload.competition||'UISP').toString().toUpperCase().replace(/[^A-Z0-9]+/g,'_');
+ dl(date+'_astra_vs_'+slug+'_'+comp+'.json',JSON.stringify(payload,null,2),'application/json');
+ const msg=document.getElementById('archive-message');
+ if(msg)msg.textContent='JSON della singola partita esportato. Caricalo nella cartella della competizione corretta.';
+};
+
+document.getElementById('export-public').onclick=()=>{let pub={title:'Astra Phoenix Basketball Stats',generated_at:new Date().toISOString(),games:db.games.filter(g=>g.status!=='Bozza'&&g.status!=='Annullata').map(g=>({...g,astra_score:score(g.id,'home'),opponent_score:score(g.id,'away')})),players:db.players.map(({id,game_id,team,number,name,starter})=>({id,game_id,team,number,name,starter})),events:db.events.map(({id,game_id,team,player_id,type,period,clock,zone,related_player_id})=>({id,game_id,team,player_id,type,period,clock,zone,related_player_id}))};dl('astra_public_data.json',JSON.stringify(pub,null,2),'application/json');document.getElementById('archive-message').textContent='File dati pubblici generato. Pubblica soltanto dati che desideri rendere visibili.'};
+document.getElementById('g-date').value=new Date().toISOString().slice(0,10);
+renderAll();
+</script>
+</body></html>
